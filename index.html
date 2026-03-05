@@ -11,13 +11,37 @@
     <style>
         body { margin: 0; padding: 0; background-color: #121212; color: #FFFFFF; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         button { cursor: pointer; border: none; transition: all 0.2s; }
-        .back-btn { background: none; color: #B3B3B3; border: 1px solid #333; padding: 6px 14px; border-radius: 20px; font-size: 12px; margin-bottom: 20px; }
-        .back-btn:hover { color: #FFF; border-color: #FFF; }
+        
+        /* 뒤로 가기 버튼 스타일 수정 */
+        .back-btn { 
+            background: none; 
+            color: #B3B3B3; 
+            border: 1px solid #ffffff; /* 테두리 흰색으로 변경 */
+            padding: 8px 18px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            margin-bottom: 20px; 
+            font-weight: 500;
+        }
+        .back-btn:hover { color: #FFF; background: rgba(255,255,255,0.1); }
+
         /* Mood Grid Layout */
-        .mood-grid { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 40px; }
+        .mood-grid { display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 60px; }
         .mood-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
-        .mood-card { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .mood-label { margin-top: 10px; font-size: 14px; font-weight: 700; color: #FFF; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* 무드 카드: 네모로 복구 및 글자 숨김 */
+        .mood-card { 
+            width: 140px; 
+            height: 140px; 
+            border-radius: 12px; /* 살짝 굴린 네모 */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            overflow: hidden; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .mood-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
@@ -27,10 +51,10 @@
         const { useState, useEffect, useRef } = React;
 
         const MOOD_DATA = {
-            chill: { total: 724, sil: 0.226, clusters: [{ id:0, n:358, sil:0.216, label:"업비트 칠팝", desc:"에너지 있는 밝고 여유로운 칠", top3:[["NVMD","Denise Julia",79],["Next Up","JBee",77]], means:{danceability:0.72,energy:0.55,valence:0.55,tempo:119,acousticness:0.3,instrumentalness:0.04} }, { id:1, n:108, sil:0.246, label:"앰비언트 기악", desc:"로파이·앰비언트", top3:[["Eternal Youth","RŮDE",71],["i'm closing my eyes","potsu",69]], means:{danceability:0.63,energy:0.31,valence:0.26,tempo:109,acousticness:0.69,instrumentalness:0.84} }, { id:2, n:258, sil:0.233, label:"감성 어쿠스틱", desc:"차분한 보컬 중심", top3:[["Another Love","Tom Odell",93],["double take","dhruv",83]], means:{danceability:0.57,energy:0.37,valence:0.28,tempo:112,acousticness:0.65,instrumentalness:0.02} }] },
-            happy: { total: 972, sil: 0.211, clusters: [{ id:0, n:469, sil:0.313, label:"유로댄스 해피", desc:"고에너지 유로팝", top3:[["Nessaja","Scooter",61]], means:{danceability:0.48,energy:0.94,valence:0.25,tempo:161,acousticness:0.05,instrumentalness:0.08} }, { id:1, n:239, sil:0.115, label:"따뜻한 해피팝", desc:"어쿠스틱 긍정 분위기", top3:[["Wanna Play?","The Prophet",65]], means:{danceability:0.65,energy:0.91,valence:0.54,tempo:135,acousticness:0.09,instrumentalness:0.08} }, { id:2, n:264, sil:0.118, label:"기악 해피", desc:"가사 없는 배경음", top3:[["DLMD","Darren Styles",59]], means:{danceability:0.58,energy:0.84,valence:0.27,tempo:153,acousticness:0.03,instrumentalness:0.72} }] },
-            romance: { total: 890, sil: 0.287, clusters: [{id:0, label:"서정 로맨스", desc:"조용한 사랑 노래", top3:[["Чистые пруды","Igor Talkov",34]], means:{danceability:0.37,energy:0.22,valence:0.27,tempo:105,acousticness:0.93,instrumentalness:0.01}},{id:1, label:"댄서블 로맨스", desc:"역동적인 러브송", top3:[["Katyusha","Georgi Vinogradov",34]], means:{danceability:0.53,energy:0.42,valence:0.62,tempo:118,acousticness:0.73,instrumentalness:0.01}},{id:2, label:"기악 로맨스", desc:"서정적 연주곡", top3:[["Katyusha","Ivan Rebroff",25]], means:{danceability:0.36,energy:0.29,valence:0.35,tempo:103,acousticness:0.92,instrumentalness:0.50}}] },
-            sad: { total: 726, sil: 0.220, clusters: [{id:0, label:"앰비언트 슬픔", desc:"순수 기악 슬픔", top3:[["Nobody Cares","Kina",65]], means:{danceability:0.65,energy:0.32,valence:0.3,tempo:123,acousticness:0.62,instrumentalness:0.73}},{id:1, label:"격정적 슬픔", desc:"에너지 있는 슬픔", top3:[["By the Sword","iamjakehill",75]], means:{danceability:0.71,energy:0.61,valence:0.49,tempo:125,acousticness:0.18,instrumentalness:0.01}},{id:2, label:"인디팝 슬픔", desc:"감성적 대중 슬픔", top3:[["death bed","Powfu",83]], means:{danceability:0.67,energy:0.39,valence:0.40,tempo:114,acousticness:0.64,instrumentalness:0.01}}] },
+            chill: { total: 724, sil: 0.226, clusters: [{ id:0, n:358, sil:0.216, label:"업비트 칠팝", desc:"에너지 있는 밝고 여유로운 칠", top3:[["NVMD","Denise Julia",79]], means:{danceability:0.72,energy:0.55,valence:0.55,tempo:119,acousticness:0.3,instrumentalness:0.04} }, { id:1, n:108, label:"앰비언트 기악", desc:"로파이·앰비언트", top3:[["Eternal Youth","RŮDE",71]], means:{danceability:0.63,energy:0.31,valence:0.26,tempo:109,acousticness:0.69,instrumentalness:0.84} }, { id:2, n:258, label:"감성 어쿠스틱", desc:"차분한 보컬 중심", top3:[["Another Love","Tom Odell",93]], means:{danceability:0.57,energy:0.37,valence:0.28,tempo:112,acousticness:0.65,instrumentalness:0.02} }] },
+            happy: { total: 972, clusters: [{ id:0, label:"유로댄스 해피", desc:"고에너지 유로팝", top3:[["Nessaja","Scooter",61]], means:{danceability:0.48,energy:0.94,valence:0.25,tempo:161,acousticness:0.05,instrumentalness:0.08} }, { id:1, label:"따뜻한 해피팝", desc:"어쿠스틱 긍정 분위기", top3:[["Wanna Play?","The Prophet",65]], means:{danceability:0.65,energy:0.91,valence:0.54,tempo:135,acousticness:0.09,instrumentalness:0.08} }, { id:2, label:"기악 해피", desc:"가사 없는 배경음", top3:[["DLMD","Darren Styles",59]], means:{danceability:0.58,energy:0.84,valence:0.27,tempo:153,acousticness:0.03,instrumentalness:0.72} }] },
+            romance: { total: 890, clusters: [{id:0, label:"서정 로맨스", desc:"조용한 사랑 노래", top3:[["Чистые пруды","Igor Talkov",34]], means:{danceability:0.37,energy:0.22,valence:0.27,tempo:105,acousticness:0.93,instrumentalness:0.01}},{id:1, label:"댄서블 로맨스", desc:"역동적인 러브송", top3:[["Katyusha","Georgi Vinogradov",34]], means:{danceability:0.53,energy:0.42,valence:0.62,tempo:118,acousticness:0.73,instrumentalness:0.01}},{id:2, label:"기악 로맨스", desc:"서정적 연주곡", top3:[["Katyusha","Ivan Rebroff",25]], means:{danceability:0.36,energy:0.29,valence:0.35,tempo:103,acousticness:0.92,instrumentalness:0.50}}] },
+            sad: { total: 726, clusters: [{id:0, label:"앰비언트 슬픔", desc:"순수 기악 슬픔", top3:[["Nobody Cares","Kina",65]], means:{danceability:0.65,energy:0.32,valence:0.3,tempo:123,acousticness:0.62,instrumentalness:0.73}},{id:1, label:"격정적 슬픔", desc:"에너지 있는 슬픔", top3:[["By the Sword","iamjakehill",75]], means:{danceability:0.71,energy:0.61,valence:0.49,tempo:125,acousticness:0.18,instrumentalness:0.01}},{id:2, label:"인디팝 슬픔", desc:"감성적 대중 슬픔", top3:[["death bed","Powfu",83]], means:{danceability:0.67,energy:0.39,valence:0.40,tempo:114,acousticness:0.64,instrumentalness:0.01}}] },
             sleep: { total: 827, clusters: [{id:0, label:"조용한 수면", desc:"부드러운 수면음악", top3:[["Ons","Huma",71]], means:{danceability:0.15,energy:0.11,valence:0.05,tempo:92,acousticness:0.91,instrumentalness:0.83}},{id:1, label:"백색소음", desc:"노이즈 계열", top3:[["Womb Heartbeat","Silent Knights",57]], means:{danceability:0.18,energy:0.75,valence:0.01,tempo:99,acousticness:0.33,instrumentalness:0.74}},{id:2, label:"리드미컬 수면", desc:"수면 사운드", top3:[["Shhhh 1","Silent Knights",60]], means:{danceability:0.34,energy:0.18,valence:0.24,tempo:111,acousticness:0.91,instrumentalness:0.40}}] },
             study: { total: 998, clusters: [{id:0, label:"업비트 BGM", desc:"활기찬 집중", top3:[["Ritual","Tipsy",53]], means:{danceability:0.70,energy:0.52,valence:0.52,tempo:117,acousticness:0.26,instrumentalness:0.84}},{id:1, label:"로파이 재즈", desc:"전형적인 공부음악", top3:[["Skin Tone","Timothy",54]], means:{danceability:0.66,energy:0.32,valence:0.30,tempo:108,acousticness:0.72,instrumentalness:0.85}},{id:2, label:"보컬 스터디", desc:"가사 있는 집중", top3:[["Latex","Sail",50]], means:{danceability:0.70,energy:0.45,valence:0.46,tempo:108,acousticness:0.45,instrumentalness:0.23}}] },
             party: { total: 988, clusters: [{id:0, label:"테크노 댄스홀", desc:"고에너지 파티", top3:[["Layla","DJ Robin",74]], means:{danceability:0.63,energy:0.91,valence:0.65,tempo:136,acousticness:0.05,instrumentalness:0.01}},{id:1, label:"아웃라이어", desc:"단독 군집", top3:[["Move It","Cats",37]], means:{danceability:0.81,energy:0.86,valence:0.82,tempo:130,acousticness:0.0,instrumentalness:0.49}},{id:2, label:"어쿠스틱 파티", desc:"슬로우 파티", top3:[["Easy Peasy","Leony",65]], means:{danceability:0.74,energy:0.75,valence:0.73,tempo:120,acousticness:0.18,instrumentalness:0.01}}] }
@@ -38,11 +62,15 @@
 
         const MOOD_STYLE = {
             chill: { background: "#f0eda8" },
-            happy: { background: "radial-gradient(circle, #fe5252 20%, #fced1b 70%)" },
+            // Happy: 중심부 작은 동그라미 (#faa555)와 배경 (#fced1b)
+            happy: { background: "radial-gradient(circle, #faa555 10%, #fced1b 30%)" }, 
             romance: { background: "#c98579" },
-            sad: { background: "linear-gradient(135deg, #9ab0c4 0%, #6a8ea8 100%)" },
+            // Sad: 좁은 경계의 그라데이션
+            sad: { background: "linear-gradient(135deg, #9ab0c4 45%, #6a8ea8 55%)" }, 
             study: { background: "#4a6741" },
-            party: { background: "linear-gradient(135deg, #BF94E4 0%, #FFBCD9 50%, #F7E7CE 100%)", boxShadow: "0 0 20px rgba(191,148,228,0.6)" }
+            // Party: 메탈릭 미러볼 느낌
+            party: { background: "linear-gradient(135deg, #BF94E4 0%, #FFBCD9 50%, #F7E7CE 100%)", boxShadow: "0 0 15px rgba(255,255,255,0.3)" },
+            sleep: { background: "#2D0A2D" } // 임시 색상
         };
 
         function tspSort(songs) {
@@ -64,7 +92,6 @@
             const [step, setStep] = useState(0);
             const [mood, setMood] = useState(null);
             const [clusterId, setCId] = useState(null);
-            const [zPrefs, setZPrefs] = useState({});
             const [playlist, setPlaylist] = useState([]);
             const [nowPlaying, setNowPlaying] = useState(0);
 
@@ -76,33 +103,43 @@
             };
 
             const MoodBtn = ({m}) => (
-                <div style={{display:"flex", flexDirection:"column", alignItems:"center"}}>
-                    <button onClick={()=>{setMood(m); setStep(1);}} className="mood-card" style={MOOD_STYLE[m] || {background:"#333"}}>
-                        {/* 이모지는 나중에 넣으실 수 있도록 비워두었습니다 */}
-                    </button>
-                    <span className="mood-label">{m}</span>
-                </div>
+                /* 버튼 태그 내부에 글자를 넣지 않아 유저에게는 보이지 않음 */
+                <button 
+                    onClick={()=>{setMood(m); setStep(1);}} 
+                    className="mood-card" 
+                    style={MOOD_STYLE[m] || {background:"#333"}}
+                    title={m} /* 마우스 올릴 때만 관리자 확인용으로 뜸 */
+                >
+                </button>
             );
 
             return (
                 <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 20px" }}>
                     {/* 상단바 */}
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 40 }}>
-                        <h2 style={{fontSize: 24, fontWeight: 900, color: "#1DB954"}}>Ensemble Mood</h2>
-                        {step === 4 && <button onClick={() => {setStep(0); setMood(null);}} style={{background:"#1DB954", color:"#000", padding:"8px 16px", borderRadius:20, fontWeight:700}}>처음으로</button>}
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 40, alignItems:"center" }}>
+                        <h2 style={{fontSize: 22, fontWeight: 900, color: "#1DB954", margin:0}}>Ensemble Mood</h2>
+                        {step === 4 && <button onClick={() => {setStep(0); setMood(null);}} style={{background:"#1DB954", color:"#000", padding:"8px 20px", borderRadius:25, fontWeight:700, fontSize:13}}>처음으로</button>}
                     </div>
 
+                    {/* 뒤로 가기 버튼: 흰색 테두리 반영 */}
                     {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
 
-                    {/* STEP 0: 무드 선택 (3줄 / 4줄 그리드) */}
+                    {/* STEP 0: 무드 선택 (글자 숨김 레이아웃) */}
                     {step === 0 && (
                         <div className="mood-grid">
-                            <h1 style={{textAlign:"center", marginBottom:40}}>어떤 플레이리스트를 원하시나요?</h1>
+                            <h1 style={{textAlign:"center", marginBottom:20, fontWeight:900, letterSpacing:"-1px"}}>What's your mood?</h1>
+                            {/* 첫 번째 줄 (chill, happy, romance) */}
                             <div className="mood-row">
-                                {["chill", "happy", "romance"].map(m => <MoodBtn key={m} m={m}/>)}
+                                <MoodBtn m="chill"/>
+                                <MoodBtn m="happy"/>
+                                <MoodBtn m="romance"/>
                             </div>
+                            {/* 두 번째 줄 (sad, study, party, sleep) */}
                             <div className="mood-row">
-                                {["sad", "study", "party", "sleep"].map(m => <MoodBtn key={m} m={m}/>)}
+                                <MoodBtn m="sad"/>
+                                <MoodBtn m="study"/>
+                                <MoodBtn m="party"/>
+                                <MoodBtn m="sleep"/>
                             </div>
                         </div>
                     )}
@@ -110,41 +147,41 @@
                     {/* STEP 1: 군집 선택 */}
                     {step === 1 && mood && (
                         <div>
-                            <h1>{mood.toUpperCase()} 스타일 선택</h1>
+                            <h1 style={{fontSize:28, fontWeight:900, marginBottom:30}}>스타일을 골라주세요</h1>
                             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
                                 {MOOD_DATA[mood].clusters.map(cl => (
-                                    <button key={cl.id} onClick={() => {setCId(cl.id); setStep(2);}} style={{ background: "#181818", border: "1px solid #333", borderRadius: 16, padding: "20px", textAlign: "left", color: "#FFF" }}>
-                                        <h3 style={{color:"#1DB954"}}>{cl.label}</h3>
-                                        <p style={{fontSize:12, color:"#888"}}>{cl.desc}</p>
+                                    <button key={cl.id} onClick={() => {setCId(cl.id); setStep(2);}} style={{ background: "#1A1A1A", border: "1px solid #333", borderRadius: 16, padding: "24px", textAlign: "left", color: "#FFF" }}>
+                                        <h3 style={{color:"#1DB954", margin:"0 0 10px 0"}}>{cl.label}</h3>
+                                        <p style={{fontSize:13, color:"#B3B3B3", margin:0, lineHeight:1.5}}>{cl.desc}</p>
                                     </button>
                                 ))}
                             </div>
                         </div>
                     )}
 
-                    {/* STEP 2: 취향 세분화 */}
+                    {/* STEP 2: 확인 단계 */}
                     {step === 2 && (
-                        <div style={{textAlign:"center", maxWidth:400, margin:"0 auto"}}>
-                            <h2>상세 취향 설정</h2>
-                            <p style={{color:"#888"}}>더 정확한 추천을 위해 하나를 골라주세요.</p>
-                            <button onClick={handleBuild} style={{ width: "100%", padding: "16px", background: "#1DB954", color: "#000", border: "none", borderRadius: 40, fontWeight: 700, marginTop:40 }}>플레이리스트 생성</button>
+                        <div style={{textAlign:"center", padding:"60px 0"}}>
+                            <h2 style={{fontSize:24, fontWeight:900}}>거의 다 됐어요!</h2>
+                            <p style={{color:"#B3B3B3", marginBottom:40}}>선택하신 스타일로 플레이리스트를 구성할게요.</p>
+                            <button onClick={handleBuild} style={{ width: "240px", padding: "16px", background: "#1DB954", color: "#000", border: "none", borderRadius: 40, fontWeight: 700, fontSize:15 }}>플레이리스트 생성</button>
                         </div>
                     )}
 
                     {/* STEP 4: 결과 화면 */}
                     {step === 4 && (
                         <div>
-                            <div style={{ background: "#1DB954", color: "#000", padding: "30px", borderRadius: 20, marginBottom: 20 }}>
-                                <h2 style={{ margin: 0 }}>{mood.toUpperCase()} Playlist</h2>
-                                <p>총 {playlist.length}곡이 생성되었습니다.</p>
+                            <div style={{ background: "#1DB954", color: "#000", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
+                                <h2 style={{ margin: "0 0 10px 0", fontWeight:900 }}>Playlist for you</h2>
+                                <p style={{margin:0, opacity:0.8, fontSize:14}}>당신의 무드에 맞춘 20곡의 추천 리스트입니다.</p>
                             </div>
-                            <div style={{ border: "1px solid #333", borderRadius: 16, overflow: "hidden" }}>
+                            <div style={{ border: "1px solid #333", borderRadius: 16, overflow: "hidden", background:"#1A1A1A" }}>
                                 {playlist.map((s, i) => (
-                                    <div key={i} onClick={() => setNowPlaying(i)} style={{ padding: "12px 20px", borderBottom: "1px solid #222", display: "grid", gridTemplateColumns: "30px 1fr 60px", alignItems: "center", cursor: "pointer", background: i === nowPlaying ? "#1DB95422" : "transparent" }}>
+                                    <div key={i} onClick={() => setNowPlaying(i)} style={{ padding: "16px 20px", borderBottom: "1px solid #282828", display: "grid", gridTemplateColumns: "40px 1fr 80px", alignItems: "center", cursor: "pointer", background: i === nowPlaying ? "#1DB95422" : "transparent" }}>
                                         <span style={{ color: i === nowPlaying ? "#1DB954" : "#555", fontWeight: 700 }}>{i + 1}</span>
                                         <div>
-                                            <div style={{ fontWeight: 700, color: i === nowPlaying ? "#1DB954" : "#FFF" }}>{s.track_name}</div>
-                                            <div style={{ fontSize: 12, color: "#888" }}>{s.artists}</div>
+                                            <div style={{ fontWeight: 700, color: i === nowPlaying ? "#1DB954" : "#FFF", marginBottom:4 }}>{s.track_name}</div>
+                                            <div style={{ fontSize: 12, color: "#B3B3B3" }}>{s.artists}</div>
                                         </div>
                                         <div style={{ textAlign: "right", fontSize: 11, color: "#555" }}>{s.popularity} pop</div>
                                     </div>
