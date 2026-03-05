@@ -9,7 +9,7 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
     <style>
-        /* 보내주신 시안의 배경색(#0f0f1a) 적용 */
+        /* 기본 배경색 유지 */
         body { margin: 0; padding: 0; background-color: #0f0f1a; color: #FFFFFF; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         button { cursor: pointer; border: none; transition: all 0.2s; }
         
@@ -23,18 +23,53 @@
         .mood-grid { display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
         .mood-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
         
+        /* 🎨 정미_배경 까만 거.html 스타일 완벽 적용 */
         .mood-card { 
-            width: 140px; height: 140px; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .mood-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-        
-        /* 투명 이모지 이미지 스타일 */
-        .mood-card img {
-            width: 80px; height: 80px; object-fit: contain; background: transparent;
+            position: relative;
+            width: 160px;
+            height: 160px;
+            border-radius: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            outline: none;
         }
 
+        .mood-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.12);
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .mood-card:hover {
+            transform: translateY(-6px) scale(1.05);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+        }
+
+        .mood-card:hover::before { opacity: 1; }
+
+        .mood-card:active {
+            transform: scale(0.96);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        
+        .mood-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            pointer-events: none;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 옵션 및 클러스터 버튼 스타일 */
         .option-btn {
             background: #1A1A1A; border: 2px solid #333; border-radius: 12px;
             padding: 24px; color: #FFF; font-size: 16px; font-weight: 700; width: 100%;
@@ -71,14 +106,15 @@
             party: { clusters: [{id:0, tags:["#고에너지", "#테크노댄스홀"], top3:[["Layla","DJ Robin"],["Olivia","Die Zipfelbuben"]], means:{danceability:0.63,energy:0.91,valence:0.65,tempo:136,acousticness:0.05,instrumentalness:0.01}},{id:1, tags:["#아웃라이어"], top3:[["Move It","Cats"]], means:{danceability:0.81,energy:0.86,valence:0.82,tempo:130,acousticness:0.0,instrumentalness:0.49}},{id:2, tags:["#분위기전환용", "#어쿠스틱파티"], top3:[["Easy Peasy","Leony"],["LEBENSLANG","Tream"]], means:{danceability:0.74,energy:0.75,valence:0.73,tempo:120,acousticness:0.18,instrumentalness:0.01}}] }
         };
 
+        // 🎨 첨부파일의 백그라운드 그라데이션 완벽 이식
         const MOOD_STYLE = {
-            chill: { background: "#f0eda8" },
-            happy: { background: "radial-gradient(circle, #faa555 10%, #fced1b 30%)" }, 
-            romance: { background: "#c98579" },
-            sad: { background: "linear-gradient(135deg, #9ab0c4 45%, #6a8ea8 55%)" }, 
-            study: { background: "#4a6741" },
-            party: { background: "linear-gradient(135deg, #BF94E4 0%, #FFBCD9 50%, #F7E7CE 100%)", boxShadow: "0 0 15px rgba(255,255,255,0.3)" },
-            sleep: { background: "#1a2540" }
+            chill: { background: "linear-gradient(160deg, #64c8e6 0%, #1e78b4 100%)" },
+            happy: { background: "linear-gradient(160deg, #ffd94f 0%, #ff9a28 100%)" }, 
+            romance: { background: "linear-gradient(160deg, #ff96aa 0%, #c83c64 100%)" },
+            sad: { background: "linear-gradient(160deg, #a0b9d2 0%, #506e96 100%)" }, 
+            sleep: { background: "linear-gradient(160deg, #3c3278 0%, #140f3c 100%)" },
+            study: { background: "linear-gradient(160deg, #8cc8a0 0%, #32825a 100%)" },
+            party: { background: "linear-gradient(160deg, #e678ff 0%, #8c28c8 100%)" }
         };
 
         const CLUSTER_FEATURE = {
@@ -139,7 +175,6 @@
                 setStep(4);
             };
 
-            // 사용자 이모지 이미지를 불러오는 무드 버튼 컴포넌트
             const MoodBtn = ({m}) => (
                 <button onClick={() => { setMood(m); setStep(1); }} className="mood-card" style={MOOD_STYLE[m] || {background:"#333"}} title={m}>
                     <img 
@@ -164,10 +199,8 @@
             return (
                 <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
                     
-                    {/* 상단 팀 로고 영역 */}
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 30, alignItems:"center" }}>
                         <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
-                            {/* 음악 앱 느낌의 음표 로고 아이콘 */}
                             <svg viewBox="0 0 24 24" fill="#1DB954" style={{width: 32, height: 32}}>
                                 <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
                             </svg>
@@ -181,7 +214,7 @@
 
                     {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
 
-                    {/* 1페이지: 무드 선택 (Nunito 폰트 + 시안 레이아웃 적용) */}
+                    {/* 1페이지: 무드 선택 */}
                     {step === 0 && (
                         <div className="mood-grid">
                             <div style={{textAlign:"center", marginBottom:"24px", fontFamily:"'Nunito', sans-serif"}}>
