@@ -110,7 +110,7 @@
             const [currentSpotifyTrack, setCurrentSpotifyTrack] = useState(null);
 
             useEffect(() => {
-                if (!SPOTIFY_TOKEN || SPOTIFY_TOKEN === "여기에_토큰을_넣으세요") return;
+                if (!SPOTIFY_TOKEN || SPOTIFY_TOKEN === "BQDaoxT9jGxU7kcXXsTFDw1-I_MPUad_NmhR9BGgdJqEfkWTE7AenXj5t6E2gciuqed2PtPZeuJ364B0N-N_IscnMa5wXePMH21t5fsHlWuOA8L4K0I9yUwUFg40d183rRm9rBJWdO3wZizIZXxs3KSYg2rgL41-a1qQanpwZK-BttN9wlx-70jdfVDRgafPIlmbVcU74afoGcb1z1GuPXE2iseDmdhvtX8duUufHiVr9lRn0wWoLUOYnulZSC8iIXMNePQWeZA9") return;
                 window.onSpotifyWebPlaybackSDKReady = () => {
                     const spotifyPlayer = new window.Spotify.Player({ name: 'Ensemble Web Player', getOAuthToken: cb => { cb(SPOTIFY_TOKEN); }, volume: 0.5 });
                     setPlayer(spotifyPlayer);
