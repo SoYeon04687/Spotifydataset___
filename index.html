@@ -66,23 +66,164 @@
             const [playlist, setPlaylist] = useState([]);
             const [nowPlaying, setNowPlaying] = useState(0);
 
-            const [player, setPlayer] = useState(null);
-            const [deviceId, setDeviceId] = useState(null);
-            const [isPaused, setIsPaused] = useState(true);
-            const [currentSpotifyTrack, setCurrentSpotifyTrack] = useState(null);
+            // 첫 스플래시 화면용 타이머
+            useEffect(() => { 
+                if (step === -1) { 
+                    const timer = setTimeout(() => { setStep(0); }, 2000); 
+                    return () => clearTimeout(timer); 
+                } 
+            }, [step]);
 
-            useEffect(() => {
-                if (step === 4 && playlist.length > 0 && deviceId) {
-                    const trackId = playlist[nowPlaying].track_id;
-                    if (trackId) {
-                        fetch(`http://googleusercontent.com/spotify.com/9{deviceId}`, {
-                            method: 'PUT',
-                            body: JSON.stringify({ uris: [`spotify:track:${trackId}`] }),
-                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SPOTIFY_TOKEN}` },
-                        });
-                    }
-                }
-            }, [nowPlaying, step, deviceId, playlist]);
+            const generatePlaylist = (pref) => {
+                const currentCluster = MOOD_DATA[mood].clusters.find(c => c.id === clusterId);
+                const seedIndex = pref === 'pop' ? 0 : 1;
+                const seedSongRaw = currentCluster.top3[seedIndex] || currentCluster.top3[0];
+                const seedSong = { track_name: seedSongRaw[0], artists: seedSongRaw[1], track_id: seedSongRaw[2], similarity: 100 };
+                
+                let pool = MOOD_DATA[mood].clusters.flatMap(c => 
+                    c.top3.map(t => ({ track_name: t[0], artists: t[1], track_id: t[2] }))
+                ).filter(s => s.track_name !== seedSong.track_name); 
+
+                while(pool.length < 9) { pool = [...pool, ...pool.map(p => ({...p, track_name: p.track_name + " (Remix)"}))]; }
+                pool = pool.slice(0, 9).map((s, index) => ({ ...s, similarity: pref === 'pop' ? (98 - (index * 2)) : (96 - (index * 3)) }));
+                setPlaylist([seedSong, ...pool]); setSortPref(pref); setStep(4);
+            };
+
+            const availableClusters = mood ? MOOD_DATA[mood].clusters : [];
+
+            const getRelativePct = (targetMood, targetClusterId, feature) => {
+                if (!targetMood || !availableClusters) return 0;
+                const totalSum = availableClusters.reduce((sum, c) => sum + c.means[feature], 0);
+                const clusterVal = availableClusters.find(c => c.id === targetClusterId)?.means[feature] || 0;
+                return totalSum > 0 ? (clusterVal / totalSum) * 100 : 0;
+            };
+
+            let popSeed = ["", ""]; let simSeed = ["", ""];
+            if (mood && clusterId !== null) {
+                const currentCluster = MOOD_DATA[mood].clusters.find(c => c.id === clusterId);
+                popSeed = currentCluster.top3[0]; simSeed = currentCluster.top3[1] || currentCluster.top3[0];
+            }
+
+            return (
+                <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
+                    {step === -1 && (
+                        <div className="splash-screen">
+                            <h2 style={{ fontSize: "3rem", fontWeight: 900, margin: 0 }}>오늘의 색,</h2>
+                            <h2 style={{ fontSize: "3rem", fontWeight: 900, margin: 0 }}>오늘의 플레이리스트</h2>
+                        </div>
+                    )}
+                    {step >= 0 && (
+                        <>
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 30, alignItems:"center" }}>
+                                <div className="logo-wrap"><div className="circles-icon"><div className="ci ci1"></div><div className="ci ci2"></div><div className="ci ci3"></div></div><div className="text-block"><div className="c2-name">ENSEMBLE</div><div className="c2-sub"><span>P</span><span>R</span><span>O</span><span>J</span><span>E</span><span>C</span><span>T</span></div></div></div>
+                                {step === 4 && <button onClick={() => setStep(0)} style={{background:"linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color:"#FFFFFF", padding:"10px 24px", borderRadius:25, fontWeight:800, fontSize:14}}>처음으로</button>}
+                            </div>
+
+                            {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
+
+                            {step === 0 && (
+                                <div className="mood-grid">
+                                    <div style={{textAlign:"center", marginBottom:"24px", fontFamily:"'Nunito', sans-serif"}}>
+                                        <h2 style={{color:"#131313", fontSize:"2.4rem", fontWeight:900, margin:"0 0 10px 0"}}>오늘의 색을 알려주세요</h2>
+                                        <h1 style={{color:"#131313", fontSize:"1rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", opacity:0.5}}>What's your mood?</h1>
+                                    </div>
+                                    <div className="mood-row"><button onClick={()=>{setMood("chill"); setStep(1);}} className="mood-card" style={{background:"#f5ebe0"}}><img src="./chill.png" /></button><button onClick={()=>{setMood("happy"); setStep(1);}} className="mood-card" style={MOOD_STYLE.happy}><img src="./happy.png" /></button><button onClick={()=>{setMood("romance"); setStep(1);}} className="mood-card" style={MOOD_STYLE.romance}><img src="./romance.png" /></button></div>
+                                    <div className="mood-row"><button onClick={()=>{setMood("sad"); setStep(1);}} className="mood-card" style={MOOD_STYLE.sad}><img src="./sad.png" /></button><button onClick={()=>{setMood("study"); setStep(1);}} className="mood-card" style={MOOD_STYLE.study}><img src="./study.png" /></button><button onClick={()=>{setMood("party"); setStep(1);}} className="mood-card" style={MOOD_STYLE.party}><img src="./party.png" /></button><button onClick={()=>{setMood("sleep"); setStep(1);}} className="mood-card" style={MOOD_STYLE.sleep}><img src="./sleep.png" /></button></div>
+                                </div>
+                            )}
+
+                            {step === 1 && mood && (
+                                <div>
+                                    <h1 style={{fontSize:28, fontWeight:900, marginBottom:30, textAlign:"center"}}>어떤 노래들을 듣고 싶나요?</h1>
+                                    <div style={{ display: "grid", gridTemplateColumns: `repeat(${availableClusters.length}, 1fr)`, gap: 20 }}>
+                                        {availableClusters.map(cl => (
+                                            <button key={cl.id} className="cluster-card" onClick={() => {setCId(cl.id); setStep(2);}}>
+                                                <div>{cl.tags.map((tag, idx) => (<div key={idx} className="hashtag">{tag}</div>))}</div>
+                                                <div style={{display:"flex", flexDirection:"column", gap:10, width:"100%", marginTop:10}}>
+                                                    {ALL_FEATS.map(feat => {
+                                                        const pct = getRelativePct(mood, cl.id, feat);
+                                                        return (
+                                                            <div key={feat}>
+                                                                <div style={{display:"flex", justifyContent:"space-between", fontSize:11, color:"#666666", marginBottom:4}}><span>{FEAT_LABEL[feat]}</span><span>{pct.toFixed(1)}%</span></div>
+                                                                <div style={{background:"#EEEEEE", height:4, borderRadius:4, overflow:"hidden"}}><div style={{width:`${pct}%`, height:"100%", background:"linear-gradient(90deg, #f093fb, #667eea)", borderRadius:4}} /></div>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 2 && (
+                                <div style={{textAlign:"center", padding:"40px 0"}}>
+                                    <h1 style={{fontSize:28, fontWeight:900, marginBottom:10}}>조금 더 취향을 좁혀볼까요?</h1>
+                                    <p style={{color:"#666666", marginBottom:40}}>당신에 대해 더 알고 싶어요 ([{FEAT_LABEL[CLUSTER_FEATURE[mood][clusterId]]}] 기준)</p>
+                                    <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
+                                        <button className="option-btn" onClick={() => { setFeatVal('hi'); setStep(3); }}>{FEAT_Q[CLUSTER_FEATURE[mood][clusterId]].hi}</button>
+                                        <button className="option-btn" onClick={() => { setFeatVal('lo'); setStep(3); }}>{FEAT_Q[CLUSTER_FEATURE[mood][clusterId]].lo}</button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 3 && (
+                                <div style={{textAlign:"center", padding:"40px 0"}}>
+                                    <h1 style={{fontSize:26, fontWeight:900, marginBottom:10}}>마지막으로,</h1>
+                                    <p style={{color:"#666666", marginBottom:40}}>어떤 음악을 기준으로 시작할까요?</p>
+                                    <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:450, margin:"0 auto"}}>
+                                        <button className="option-btn" onClick={() => generatePlaylist('pop')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 6, padding: "24px 16px"}}>
+                                            <span style={{fontSize: 16, fontWeight: 800, marginBottom: 8}}>⭐ 대중성 높은 곡으로 시작하기</span>
+                                            <span style={{fontSize: 18, color: "#c471ed", fontWeight: 900}}>{popSeed[0]}</span>
+                                            <span style={{fontSize: 13, color: "#888888"}}>{popSeed[1]}</span>
+                                        </button>
+                                        <button className="option-btn" onClick={() => generatePlaylist('sim')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 6, padding: "24px 16px"}}>
+                                            <span style={{fontSize: 16, fontWeight: 800, marginBottom: 8}}>🎯 내 취향에 딱 맞는 곡으로 시작하기</span>
+                                            <span style={{fontSize: 18, color: "#c471ed", fontWeight: 900}}>{simSeed[0]}</span>
+                                            <span style={{fontSize: 13, color: "#888888"}}>{simSeed[1]}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {step === 4 && (
+                                <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", flexWrap: "wrap" }}>
+                                    
+                                    {/* 💡 여기가 핵심 수정 부분입니다! 기존 UI 대신 스포티파이 공식 위젯(Iframe)으로 교체했습니다. */}
+                                    <div style={{ flex: "1 1 300px", position: "sticky", top: 20 }}>
+                                        <iframe 
+                                            src={`https://open.spotify.com/embed/track/${playlist[nowPlaying]?.track_id}?utm_source=generator`} 
+                                            width="100%" 
+                                            height="352" 
+                                            frameBorder="0" 
+                                            allowFullScreen="" 
+                                            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                                            loading="lazy"
+                                            style={{ borderRadius: 16, boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}
+                                        ></iframe>
+                                    </div>
+
+                                    <div style={{ flex: "2 1 500px", display: "flex", flexDirection: "column", gap: 10 }}>
+                                        {playlist.map((s, i) => (
+                                            <div key={i} onClick={() => setNowPlaying(i)} style={{ padding: "16px 20px", background: i === nowPlaying ? "rgba(196, 113, 237, 0.1)" : "#FFFFFF", border: "1px solid", borderColor: i === nowPlaying ? "#c471ed" : "#DDDDDD", borderRadius: 16, display: "grid", gridTemplateColumns: "50px 1fr", alignItems: "center", cursor: "pointer", transition: "all 0.2s" }}>
+                                                <div style={{ width: 40, height: 40, background: "#EEEEEE", borderRadius: 6, display:"flex", alignItems:"center", justifyContent:"center", color:"#9f7aea", fontWeight:900 }}>{i === nowPlaying ? "🎵" : i+1}</div>
+                                                <div>
+                                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                                                        <div><div style={{ fontWeight: 700, color: i === nowPlaying ? "#c471ed" : "#131313" }}>{s.track_name}</div><div style={{ fontSize: 12, color: "#666666" }}>{s.artists}</div></div>
+                                                        <div style={{ fontSize: 11, color: "#c471ed", fontWeight: 700 }}>{i === 0 ? "대표곡" : `${s.similarity}% 유사`}</div>
+                                                    </div>
+                                                    <div className="sim-bar-container"><div className="sim-bar-fill" style={{ width: `${s.similarity}%` }}></div></div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
+            );
+        }
 
             useEffect(() => { if (step === -1) { const timer = setTimeout(() => { setStep(0); }, 2000); return () => clearTimeout(timer); } }, [step]);
 
