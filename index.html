@@ -220,7 +220,6 @@
                 
                 // 대중성을 고르면 1순위 곡을, 취향을 고르면 2순위 곡을 씨드곡으로 설정
                 const seedIndex = pref === 'pop' ? 0 : 1;
-                // 만약 2순위 곡이 없다면(데이터 부족 등) 1순위 곡으로 대체
                 const seedSongRaw = currentCluster.top3[seedIndex] || currentCluster.top3[0];
                 const seedSong = { track_name: seedSongRaw[0], artists: seedSongRaw[1], similarity: 100 };
                 
@@ -377,7 +376,7 @@
                                 </div>
                             )}
 
-                            {/* 4페이지: 정렬(씨드) 선택 (사용자 요청 반영 부분) */}
+                            {/* 4페이지: 정렬(씨드) 선택 */}
                             {step === 3 && (
                                 <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
                                     <h1 style={{fontSize:26, fontWeight:900, marginBottom:10}}>마지막으로,</h1>
@@ -399,7 +398,7 @@
                                 </div>
                             )}
 
-                            {/* 5페이지: 최종 플레이리스트 */}
+                            {/* 5페이지: 최종 플레이리스트 (요청하신 UI 수정 완벽 반영!) */}
                             {step === 4 && (
                                 <div>
                                     <div style={{ background: "linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color: "#FFFFFF", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
@@ -450,11 +449,15 @@
                                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                                                             <div>
                                                                 <div style={{ fontWeight: 700, color: i === nowPlaying ? "#c471ed" : "#131313", marginBottom:2 }}>
-                                                                    {s.track_name} {i === 0 && <span style={{fontSize:10, background:"#c471ed", color:"#FFF", padding:"2px 6px", borderRadius:10, marginLeft:4}}>Seed</span>}
+                                                                    {/* Seed 뱃지 삭제됨 */}
+                                                                    {s.track_name}
                                                                 </div>
                                                                 <div style={{ fontSize: 12, color: "#666666" }}>{s.artists}</div>
                                                             </div>
-                                                            <div style={{ fontSize: 11, color: "#c471ed", fontWeight: 700 }}>{s.similarity}% 유사</div>
+                                                            {/* 1위 곡은 '대표곡', 나머지는 '% 유사'로 텍스트 변경 */}
+                                                            <div style={{ fontSize: 11, color: "#c471ed", fontWeight: 700 }}>
+                                                                {i === 0 ? "대표곡" : `${s.similarity}% 유사`}
+                                                            </div>
                                                         </div>
                                                         <div className="sim-bar-container">
                                                             <div className="sim-bar-fill" style={{ width: `${s.similarity}%` }}></div>
