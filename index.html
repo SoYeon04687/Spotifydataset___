@@ -7,17 +7,18 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Nunito:wght@700;900&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;900&family=Nunito:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;600&family=Outfit:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; background-color: #1A1A1A; color: #ffffff; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        /* 배경색 #F0EAE7, 글자색 #131313 유지 */
+        body { margin: 0; padding: 0; background-color: #F0EAE7; color: #131313; font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         button { cursor: pointer; border: none; transition: all 0.2s; }
         
         .back-btn { 
-            background: none; color: #B3B3B3; border: 1px solid #ffffff; 
+            background: none; color: #555555; border: 1px solid #131313; 
             padding: 8px 18px; border-radius: 20px; font-size: 12px; 
             margin-bottom: 20px; font-weight: 500;
         }
-        .back-btn:hover { color: #FFF; background: rgba(255,255,255,0.1); }
+        .back-btn:hover { color: #131313; background: rgba(0,0,0,0.05); }
 
         .mood-grid { display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
         .mood-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
@@ -27,61 +28,121 @@
             position: relative; width: 160px; height: 160px; border-radius: 32px;
             display: flex; align-items: center; justify-content: center; overflow: hidden;
             transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s ease;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4); outline: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15); outline: none;
         }
         .mood-card::before {
-            content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.12);
+            content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.4);
             opacity: 0; transition: opacity 0.15s ease;
         }
-        .mood-card:hover { transform: translateY(-6px) scale(1.05); box-shadow: 0 18px 40px rgba(0,0,0,0.5); }
+        .mood-card:hover { transform: translateY(-6px) scale(1.05); box-shadow: 0 18px 40px rgba(0,0,0,0.25); }
         .mood-card:hover::before { opacity: 1; }
-        .mood-card:active { transform: scale(0.96); box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        .mood-card:active { transform: scale(0.96); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         
         .mood-card img {
             width: 40px; height: 40px; object-fit: contain; pointer-events: none;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); position: relative; z-index: 1;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2)); position: relative; z-index: 1;
         }
 
-        /* 옵션 및 클러스터 버튼 스타일 */
         .option-btn {
-            background: #1A1A1A; border: 2px solid #333; border-radius: 12px;
-            padding: 24px; color: #FFF; font-size: 16px; font-weight: 700; width: 100%;
+            background: #FFFFFF; border: 2px solid #DDDDDD; border-radius: 12px;
+            padding: 24px; color: #131313; font-size: 16px; font-weight: 700; width: 100%;
             margin-bottom: 16px; text-align: center;
         }
-        .option-btn:hover { border-color: #1DB954; background: #222; }
+        .option-btn:hover { border-color: #1DB954; background: #FAFAFA; }
 
         .cluster-card {
-            background: #1A1A1A; border: 1px solid #333; border-radius: 16px; 
+            background: #FFFFFF; border: 1px solid #DDDDDD; border-radius: 16px; 
             padding: 24px 20px; display: flex; flex-direction: column; gap: 20px;
-            color: #FFF; transition: all 0.2s; text-align: left;
+            color: #131313; transition: all 0.2s; text-align: left;
         }
         .cluster-card:hover { border-color: #1DB954; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(29,185,84,0.15); }
         .hashtag { color: #1DB954; font-size: 15px; font-weight: 800; line-height: 1.4; margin-bottom: 4px; }
         
         ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f0f1a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: #F0EAE7; }
+        ::-webkit-scrollbar-thumb { background: #CCCCCC; border-radius: 4px; }
 
-        /* --- 앙상블 움직이는 로고 스타일 --- */
-        .waves-icon-header { display: flex; align-items: flex-end; gap: 4px; height: 32px; }
-        .wave-bar-header { width: 5px; border-radius: 99px; animation: wave-pulse 1.4s ease-in-out infinite; }
-        
-        @keyframes wave-pulse {
-            0%, 100% { transform: scaleY(1); }
-            50% { transform: scaleY(0.4); }
+        /* --- 앙상블 움직이는 로고 스타일 (Concept B) --- */
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 20px;
         }
 
-        .ensemble-logo-text {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 22px;
-            letter-spacing: 0.05em;
-            background: linear-gradient(135deg, #a8edea 0%, #7ec8c8 40%, #b5b3ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
-            line-height: 1.1;
+        .circles-icon {
+            position: relative;
+            width: 80px;
+            height: 56px;
+            flex-shrink: 0;
+        }
+
+        .ci {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            mix-blend-mode: normal;
+        }
+
+        .ci1 {
+            left: 0; top: 5px;
+            background: linear-gradient(135deg, #f093fb, #c471ed);
+            opacity: 0.85;
+            animation: merge-left 4s ease-in-out infinite;
+        }
+        .ci2 {
+            left: 18px; top: 5px;
+            background: linear-gradient(135deg, #c471ed, #9f7aea);
+            opacity: 0.6;
+            animation: merge-center 4s ease-in-out infinite;
+        }
+        .ci3 {
+            left: 36px; top: 5px;
+            background: linear-gradient(135deg, #9f7aea, #667eea);
+            opacity: 0.5;
+            animation: merge-right 4s ease-in-out infinite;
+        }
+
+        @keyframes merge-left {
+            0%, 15%   { transform: translateX(0px);  opacity: 0.85; }
+            55%, 70%  { transform: translateX(18px); opacity: 0.5;  }
+            100%      { transform: translateX(0px);  opacity: 0.85; }
+        }
+
+        @keyframes merge-center {
+            0%, 15%   { opacity: 0.6; }
+            55%, 70%  { opacity: 0.75; }
+            100%      { opacity: 0.6; }
+        }
+
+        @keyframes merge-right {
+            0%, 15%   { transform: translateX(0px);   opacity: 0.5;  }
+            55%, 70%  { transform: translateX(-18px); opacity: 0.45; }
+            100%      { transform: translateX(0px);   opacity: 0.5;  }
+        }
+
+        .text-block {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .c2-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 30px;
+            letter-spacing: 0.02em;
+            color: #1a1a1a;
+        }
+
+        .c2-sub {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 300;
+            font-size: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #888;
+            margin-top: -4px;
         }
     </style>
 </head>
@@ -193,31 +254,20 @@
             return (
                 <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
                     
-                    {/* 상단 앙상블 움직이는 로고 영역 */}
+                    {/* 상단 앙상블 움직이는 로고 (Concept B) 영역 */}
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 30, alignItems:"center" }}>
-                        <div style={{display: "flex", alignItems: "center", gap: "16px"}}>
-                            
-                            {/* 파동 애니메이션 마크 */}
-                            <div className="waves-icon-header">
-                                <div className="wave-bar-header" style={{height:"12px", background:"linear-gradient(180deg,#a8edea,#7ec8c8)", animationDelay:"0s"}}></div>
-                                <div className="wave-bar-header" style={{height:"18px", background:"linear-gradient(180deg,#a0e4e4,#7abfbf)", animationDelay:"0.1s"}}></div>
-                                <div className="wave-bar-header" style={{height:"26px", background:"linear-gradient(180deg,#98dada,#74b8b8)", animationDelay:"0.2s"}}></div>
-                                <div className="wave-bar-header" style={{height:"32px", background:"linear-gradient(180deg,#90d0d0,#6cb0b0)", animationDelay:"0.3s"}}></div>
-                                <div className="wave-bar-header" style={{height:"28px", background:"linear-gradient(180deg,#9ccce0,#7abccc)", animationDelay:"0.4s"}}></div>
-                                <div className="wave-bar-header" style={{height:"22px", background:"linear-gradient(180deg,#b0b8f0,#9898e0)", animationDelay:"0.5s"}}></div>
-                                <div className="wave-bar-header" style={{height:"28px", background:"linear-gradient(180deg,#b5b3ff,#9898e8)", animationDelay:"0.6s"}}></div>
-                                <div className="wave-bar-header" style={{height:"18px", background:"linear-gradient(180deg,#c0b0ff,#a088f0)", animationDelay:"0.7s"}}></div>
-                                <div className="wave-bar-header" style={{height:"12px", background:"linear-gradient(180deg,#cbb8ff,#a890f4)", animationDelay:"0.8s"}}></div>
+                        <div className="logo-wrap">
+                            <div className="circles-icon">
+                                <div className="ci ci1"></div>
+                                <div className="ci ci2"></div>
+                                <div className="ci ci3"></div>
                             </div>
-                            
-                            {/* 팀 타이포그래피 */}
-                            <div>
-                                <div style={{fontSize: 10, color: "#a0e4e4", letterSpacing: 2, fontWeight: 700, textTransform: "uppercase", marginBottom: 3, opacity: 0.8}}>Team</div>
-                                <h2 className="ensemble-logo-text">ENSEMBLE</h2>
+                            <div className="text-block">
+                                <div className="c2-name">ENSEMBLE</div>
+                                <div className="c2-sub">PROJECT</div>
                             </div>
-                            
                         </div>
-                        {step === 4 && <button onClick={resetApp} style={{background:"linear-gradient(135deg, #a8edea 0%, #b5b3ff 100%)", color:"#0f0f1a", padding:"10px 24px", borderRadius:25, fontWeight:800, fontSize:14}}>처음으로</button>}
+                        {step === 4 && <button onClick={resetApp} style={{background:"linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color:"#FFFFFF", padding:"10px 24px", borderRadius:25, fontWeight:800, fontSize:14}}>처음으로</button>}
                     </div>
 
                     {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
@@ -226,10 +276,10 @@
                     {step === 0 && (
                         <div className="mood-grid">
                             <div style={{textAlign:"center", marginBottom:"24px", fontFamily:"'Nunito', sans-serif"}}>
-                                <h1 style={{color:"#fff", fontSize:"1.4rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", opacity:0.5, margin:"0 0 10px 0"}}>
+                                <h1 style={{color:"#131313", fontSize:"1.4rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", opacity:0.5, margin:"0 0 10px 0"}}>
                                     What's your mood?
                                 </h1>
-                                <h2 style={{color:"#fff", fontSize:"2.4rem", fontWeight:900, margin:0, wordBreak:"keep-all"}}>
+                                <h2 style={{color:"#131313", fontSize:"2.4rem", fontWeight:900, margin:0, wordBreak:"keep-all"}}>
                                     지금 기분과 가장 가까운 색은 어떤 건가요?
                                 </h2>
                             </div>
@@ -245,7 +295,7 @@
                     {/* 2페이지: 클러스터 선택 */}
                     {step === 1 && mood && (
                         <div>
-                            <h1 style={{fontSize:28, fontWeight:900, marginBottom:30, textAlign:"center"}}>어떤 스타일이 끌리나요?</h1>
+                            <h1 style={{fontSize:28, fontWeight:900, marginBottom:30, textAlign:"center", color:"#131313"}}>어떤 스타일이 끌리나요?</h1>
                             <div style={{ display: "grid", gridTemplateColumns: `repeat(${availableClusters.length}, 1fr)`, gap: 20 }}>
                                 {availableClusters.map(cl => (
                                     <button key={cl.id} className="cluster-card" onClick={() => {setCId(cl.id); setStep(2);}}>
@@ -260,24 +310,24 @@
                                                 const pct = getRelativePct(mood, cl.id, feat);
                                                 return (
                                                     <div key={feat}>
-                                                        <div style={{display:"flex", justifyContent:"space-between", fontSize:11, color:"#B3B3B3", marginBottom:4}}>
+                                                        <div style={{display:"flex", justifyContent:"space-between", fontSize:11, color:"#666666", marginBottom:4}}>
                                                             <span>{FEAT_LABEL[feat]}</span>
                                                             <span>{pct.toFixed(1)}%</span>
                                                         </div>
-                                                        <div style={{background:"#282828", height:4, borderRadius:4, overflow:"hidden"}}>
-                                                            <div style={{width:`${pct}%`, height:"100%", background:"linear-gradient(90deg, #a8edea, #b5b3ff)", borderRadius:4}} />
+                                                        <div style={{background:"#EEEEEE", height:4, borderRadius:4, overflow:"hidden"}}>
+                                                            <div style={{width:`${pct}%`, height:"100%", background:"linear-gradient(90deg, #f093fb, #667eea)", borderRadius:4}} />
                                                         </div>
                                                     </div>
                                                 )
                                             })}
                                         </div>
 
-                                        <div style={{borderTop:"1px solid #333", paddingTop:16, marginTop:"auto"}}>
-                                            <div style={{fontSize:11, color:"#555", marginBottom:8, fontWeight:700}}>대표곡</div>
+                                        <div style={{borderTop:"1px solid #EEEEEE", paddingTop:16, marginTop:"auto"}}>
+                                            <div style={{fontSize:11, color:"#888888", marginBottom:8, fontWeight:700}}>대표곡</div>
                                             {cl.top3.map(([name, artist], idx) => (
                                                 <div key={idx} style={{marginBottom:6}}>
-                                                    <div style={{fontSize:13, fontWeight:700, color:"#FFF", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{name}</div>
-                                                    <div style={{fontSize:11, color:"#888"}}>{artist}</div>
+                                                    <div style={{fontSize:13, fontWeight:700, color:"#131313", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{name}</div>
+                                                    <div style={{fontSize:11, color:"#666666"}}>{artist}</div>
                                                 </div>
                                             ))}
                                         </div>
@@ -289,9 +339,9 @@
 
                     {/* 3페이지: 피처 선택 */}
                     {step === 2 && (
-                        <div style={{textAlign:"center", padding:"40px 0"}}>
+                        <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
                             <h1 style={{fontSize:28, fontWeight:900, marginBottom:10}}>조금 더 취향을 좁혀볼까요?</h1>
-                            <p style={{color:"#B3B3B3", marginBottom:40}}>[{FEAT_LABEL[CLUSTER_FEATURE[mood][clusterId]]}] 기준으로 선택해주세요.</p>
+                            <p style={{color:"#666666", marginBottom:40}}>[{FEAT_LABEL[CLUSTER_FEATURE[mood][clusterId]]}] 기준으로 선택해주세요.</p>
                             
                             <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
                                 <button className="option-btn" onClick={() => { setFeatVal('hi'); setStep(3); }}>
@@ -306,9 +356,9 @@
 
                     {/* 4페이지: 정렬 기준 선택 */}
                     {step === 3 && (
-                        <div style={{textAlign:"center", padding:"40px 0"}}>
+                        <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
                             <h1 style={{fontSize:26, fontWeight:900, marginBottom:10}}>마지막으로,</h1>
-                            <p style={{color:"#B3B3B3", marginBottom:40}}>어떤 음악들을 먼저 듣고 싶으신가요?</p>
+                            <p style={{color:"#666666", marginBottom:40}}>어떤 음악들을 먼저 듣고 싶으신가요?</p>
                             
                             <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
                                 <button className="option-btn" onClick={() => generatePlaylist('pop')}>
@@ -324,22 +374,22 @@
                     {/* 5페이지: 결과 (플레이리스트 10곡) */}
                     {step === 4 && (
                         <div>
-                            <div style={{ background: "linear-gradient(135deg, #a8edea 0%, #b5b3ff 100%)", color: "#0f0f1a", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
+                            <div style={{ background: "linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color: "#FFFFFF", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
                                 <h2 style={{ margin: "0 0 10px 0", fontWeight:900 }}>Playlist for you</h2>
-                                <p style={{margin:0, opacity:0.8, fontSize:14, fontWeight:500}}>
+                                <p style={{margin:0, opacity:0.9, fontSize:14, fontWeight:500}}>
                                     당신의 무드에 맞춘 10곡의 추천 리스트입니다.<br/>
                                     ({sortPref === 'pop' ? "인기도순" : "취향 유사도순"} 정렬)
                                 </p>
                             </div>
-                            <div style={{ border: "1px solid #333", borderRadius: 16, overflow: "hidden", background:"#1A1A1A" }}>
+                            <div style={{ border: "1px solid #DDDDDD", borderRadius: 16, overflow: "hidden", background:"#FFFFFF" }}>
                                 {playlist.map((s, i) => (
-                                    <div key={i} onClick={() => setNowPlaying(i)} style={{ padding: "16px 20px", borderBottom: "1px solid #282828", display: "grid", gridTemplateColumns: "40px 1fr 80px", alignItems: "center", cursor: "pointer", background: i === nowPlaying ? "rgba(168, 237, 234, 0.1)" : "transparent" }}>
-                                        <span style={{ color: i === nowPlaying ? "#a8edea" : "#555", fontWeight: 700 }}>{i + 1}</span>
+                                    <div key={i} onClick={() => setNowPlaying(i)} style={{ padding: "16px 20px", borderBottom: "1px solid #EEEEEE", display: "grid", gridTemplateColumns: "40px 1fr 80px", alignItems: "center", cursor: "pointer", background: i === nowPlaying ? "rgba(196, 113, 237, 0.1)" : "transparent" }}>
+                                        <span style={{ color: i === nowPlaying ? "#c471ed" : "#888888", fontWeight: 700 }}>{i + 1}</span>
                                         <div>
-                                            <div style={{ fontWeight: 700, color: i === nowPlaying ? "#a8edea" : "#FFF", marginBottom:4 }}>{s.track_name}</div>
-                                            <div style={{ fontSize: 12, color: "#B3B3B3" }}>{s.artists}</div>
+                                            <div style={{ fontWeight: 700, color: i === nowPlaying ? "#c471ed" : "#131313", marginBottom:4 }}>{s.track_name}</div>
+                                            <div style={{ fontSize: 12, color: "#666666" }}>{s.artists}</div>
                                         </div>
-                                        <div style={{ textAlign: "right", fontSize: 11, color: "#555" }}>{s.popularity} pop</div>
+                                        <div style={{ textAlign: "right", fontSize: 11, color: "#888888" }}>{s.popularity} pop</div>
                                     </div>
                                 ))}
                             </div>
