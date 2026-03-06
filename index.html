@@ -20,6 +20,19 @@
         }
         .back-btn:hover { color: #131313; background: rgba(0,0,0,0.05); }
 
+        /* Splash Screen Animation */
+        .splash-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 70vh; font-family: 'Nunito', sans-serif;
+            animation: fadeInOut 2s ease-in-out forwards;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            20% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+
         .mood-grid { display: flex; flex-direction: column; align-items: center; gap: 24px; margin-top: 20px; }
         .mood-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
         
@@ -48,59 +61,37 @@
             padding: 24px; color: #131313; font-size: 16px; font-weight: 700; width: 100%;
             margin-bottom: 16px; text-align: center;
         }
-        .option-btn:hover { border-color: #1DB954; background: #FAFAFA; }
+        /* 로고 보라색 포인트 컬러로 hover 변경 */
+        .option-btn:hover { border-color: #c471ed; background: #FAFAFA; box-shadow: 0 4px 15px rgba(196,113,237,0.1); }
 
         .cluster-card {
             background: #FFFFFF; border: 1px solid #DDDDDD; border-radius: 16px; 
             padding: 24px 20px; display: flex; flex-direction: column; gap: 20px;
             color: #131313; transition: all 0.2s; text-align: left;
         }
-        .cluster-card:hover { border-color: #1DB954; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(29,185,84,0.15); }
-        .hashtag { color: #1DB954; font-size: 15px; font-weight: 800; line-height: 1.4; margin-bottom: 4px; }
+        .cluster-card:hover { border-color: #c471ed; transform: translateY(-4px); box-shadow: 0 8px 24px rgba(196,113,237,0.15); }
+        .hashtag { color: #9f7aea; font-size: 15px; font-weight: 800; line-height: 1.4; margin-bottom: 4px; }
         
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #F0EAE7; }
         ::-webkit-scrollbar-thumb { background: #CCCCCC; border-radius: 4px; }
 
-        /* --- 앙상블 움직이는 로고 스타일 (Concept B) --- */
-        .logo-wrap {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .circles-icon {
-            position: relative;
-            width: 80px;
-            height: 56px;
-            flex-shrink: 0;
-        }
-
-        .ci {
-            position: absolute;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            mix-blend-mode: normal;
-        }
-
+        /* --- 앙상블 움직이는 로고 스타일 (Concept B-3) --- */
+        .logo-wrap { display: flex; align-items: center; gap: 20px; }
+        .circles-icon { position: relative; width: 80px; height: 56px; flex-shrink: 0; }
+        .ci { position: absolute; width: 46px; height: 46px; border-radius: 50%; }
+        
         .ci1 {
-            left: 0; top: 5px;
-            background: linear-gradient(135deg, #f093fb, #c471ed);
-            opacity: 0.85;
-            animation: merge-left 4s ease-in-out infinite;
+            left: 0; top: 5px; background: linear-gradient(135deg, #f093fb, #c471ed);
+            opacity: 0.85; animation: merge-left 4s ease-in-out infinite;
         }
         .ci2 {
-            left: 18px; top: 5px;
-            background: linear-gradient(135deg, #c471ed, #9f7aea);
-            opacity: 0.6;
-            animation: merge-center 4s ease-in-out infinite;
+            left: 18px; top: 5px; background: linear-gradient(135deg, #c471ed, #9f7aea);
+            opacity: 0.6; animation: merge-center 4s ease-in-out infinite;
         }
         .ci3 {
-            left: 36px; top: 5px;
-            background: linear-gradient(135deg, #9f7aea, #667eea);
-            opacity: 0.5;
-            animation: merge-right 4s ease-in-out infinite;
+            left: 36px; top: 5px; background: linear-gradient(135deg, #9f7aea, #667eea);
+            opacity: 0.5; animation: merge-right 4s ease-in-out infinite;
         }
 
         @keyframes merge-left {
@@ -108,41 +99,42 @@
             55%, 70%  { transform: translateX(18px); opacity: 0.5;  }
             100%      { transform: translateX(0px);  opacity: 0.85; }
         }
-
         @keyframes merge-center {
             0%, 15%   { opacity: 0.6; }
             55%, 70%  { opacity: 0.75; }
             100%      { opacity: 0.6; }
         }
-
         @keyframes merge-right {
             0%, 15%   { transform: translateX(0px);   opacity: 0.5;  }
             55%, 70%  { transform: translateX(-18px); opacity: 0.45; }
             100%      { transform: translateX(0px);   opacity: 0.5;  }
         }
 
-        .text-block {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
+        .text-block { display: flex; flex-direction: column; gap: 2px; }
         .c2-name {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 600;
-            font-size: 30px;
-            letter-spacing: 0.02em;
-            color: #1a1a1a;
+            font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 30px;
+            letter-spacing: 0.02em; color: #1a1a1a; display: block;
+        }
+        .c2-sub {
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Outfit', sans-serif; font-weight: 300; font-size: 10px;
+            letter-spacing: 0.3em; text-transform: uppercase; color: #888; margin-top: -4px;
         }
 
-        .c2-sub {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 300;
-            font-size: 10px;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: #888;
-            margin-top: -4px;
+        /* 일렁이는 퍼센테이지 바 애니메이션 */
+        .sim-bar-container { background: #EEEEEE; height: 6px; border-radius: 6px; overflow: hidden; position: relative; }
+        .sim-bar-fill {
+            height: "100%"; background: linear-gradient(90deg, #9f7aea, #f093fb); border-radius: 6px;
+            position: relative;
+        }
+        .sim-bar-fill::after {
+            content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 15px;
+            background: rgba(255,255,255,0.6); filter: blur(3px);
+            animation: ripple-end 1.5s infinite alternate;
+        }
+        @keyframes ripple-end {
+            0% { transform: scaleX(1) translateX(0); opacity: 0.5; }
+            100% { transform: scaleX(2) translateX(2px); opacity: 1; }
         }
     </style>
 </head>
@@ -150,7 +142,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
         const MOOD_DATA = {
             chill: { clusters: [{ id:0, tags:["#업비트", "#여유로운칠팝"], top3:[["NVMD","Denise Julia"],["Next Up","JBee"]], means:{danceability:0.72,energy:0.55,valence:0.55,tempo:119,acousticness:0.3,instrumentalness:0.04} }, { id:1, tags:["#앰비언트", "#가사없는로파이"], top3:[["Eternal Youth","RŮDE"],["i'm closing my eyes","potsu"]], means:{danceability:0.63,energy:0.31,valence:0.26,tempo:109,acousticness:0.69,instrumentalness:0.84} }, { id:2, tags:["#감성어쿠스틱", "#차분한보컬"], top3:[["Another Love","Tom Odell"],["double take","dhruv"]], means:{danceability:0.57,energy:0.37,valence:0.28,tempo:112,acousticness:0.65,instrumentalness:0.02} }] },
@@ -163,7 +155,7 @@
         };
 
         const MOOD_STYLE = {
-            chill: { background: "linear-gradient(160deg, #64c8e6 0%, #1e78b4 100%)" },
+            chill: { background: "#f5ebe0" }, // 사용자 요청: chill 배경색 변경
             happy: { background: "linear-gradient(160deg, #ffd94f 0%, #ff9a28 100%)" }, 
             romance: { background: "linear-gradient(160deg, #ff96aa 0%, #c83c64 100%)" },
             sad: { background: "linear-gradient(160deg, #a0b9d2 0%, #506e96 100%)" }, 
@@ -189,22 +181,33 @@
         const ALL_FEATS = ["danceability", "energy", "valence", "tempo", "acousticness", "instrumentalness"];
 
         const FEAT_Q = {
-            danceability: { hi: "리드미컬하고 춤추기 좋은 곡", lo: "리듬감이 적고 차분한 곡" },
-            energy: { hi: "에너지가 넘치고 강렬한 곡", lo: "에너지가 낮고 잔잔한 곡" },
-            valence: { hi: "더 밝고 긍정적인 곡", lo: "더 우울하고 진지한 곡" },
-            tempo: { hi: "템포가 빠른 곡", lo: "템포가 느린 곡" },
-            acousticness: { hi: "어쿠스틱 악기 중심의 곡", lo: "전자음이 섞인 곡" },
-            instrumentalness: { hi: "보컬이 없는 연주 중심 곡", lo: "보컬이 포함된 곡" }
+            danceability: { hi: "🎵 리드미컬하고 춤추기 좋은 곡", lo: "☕ 리듬감이 적고 차분한 곡" },
+            energy: { hi: "🔥 에너지가 넘치고 강렬한 곡", lo: "🌙 에너지가 낮고 잔잔한 곡" },
+            valence: { hi: "☀️ 더 밝고 긍정적인 곡", lo: "🌧️ 더 우울하고 진지한 곡" },
+            tempo: { hi: "🏃‍♂️ 템포가 빠른 곡", lo: "🐢 템포가 느린 곡" },
+            acousticness: { hi: "🎸 어쿠스틱 악기 중심의 곡", lo: "💻 전자음이 섞인 곡" },
+            instrumentalness: { hi: "🎻 보컬이 없는 연주 중심 곡", lo: "🎤 보컬이 포함된 곡" }
         };
 
         function SpotifyMoodApp() {
-            const [step, setStep] = useState(0);
+            // step: -1(Splash), 0(Mood), 1(Cluster), 2(Feature), 3(Sort/Seed), 4(Playlist)
+            const [step, setStep] = useState(-1); 
             const [mood, setMood] = useState(null);
             const [clusterId, setCId] = useState(null);
             const [featVal, setFeatVal] = useState(null);
             const [sortPref, setSortPref] = useState(null);
             const [playlist, setPlaylist] = useState([]);
             const [nowPlaying, setNowPlaying] = useState(0);
+
+            // Splash Screen Timer
+            useEffect(() => {
+                if (step === -1) {
+                    const timer = setTimeout(() => {
+                        setStep(0);
+                    }, 2000);
+                    return () => clearTimeout(timer);
+                }
+            }, [step]);
 
             const resetApp = () => {
                 setStep(0); setMood(null); setCId(null); 
@@ -213,19 +216,28 @@
             };
 
             const generatePlaylist = (pref) => {
-                const cl = MOOD_DATA[mood].clusters.find(c => c.id === clusterId);
-                let pool = MOOD_DATA[mood].clusters.flatMap(c => 
-                    c.top3.map(t => ({ track_name: t[0], artists: t[1], popularity: Math.floor(Math.random() * 40 + 40) }))
-                );
+                // 이전의 랜덤(Math.random) 생성 방식을 버리고, 
+                // 씨드곡을 기반으로 한 결정론적(Deterministic) 리스트 생성으로 변경했습니다.
+                const currentCluster = MOOD_DATA[mood].clusters.find(c => c.id === clusterId);
+                const seedSong = { track_name: currentCluster.top3[0][0], artists: currentCluster.top3[0][1], similarity: 100 };
                 
-                while(pool.length < 10) {
-                    pool = [...pool, ...pool.map(p => ({...p, track_name: p.track_name + " (Remix)"}))];
+                // 임시로 무드 내의 다른 곡들을 모아 유사도가 점차 낮아지게 고정 배열 생성 (실제 파이썬 API 연동 시 진짜 점수로 대체됨)
+                let pool = MOOD_DATA[mood].clusters.flatMap(c => 
+                    c.top3.map(t => ({ track_name: t[0], artists: t[1] }))
+                ).filter(s => s.track_name !== seedSong.track_name); // 씨드곡 중복 제거
+
+                // 10곡을 채우기 위한 더미 데이터 생성 (유사도 점수 고정 할당)
+                while(pool.length < 9) {
+                    pool = [...pool, ...pool.map(p => ({...p, track_name: p.track_name + " (Acoustic)"}))];
                 }
+                
+                pool = pool.slice(0, 9).map((s, index) => ({
+                    ...s, 
+                    similarity: pref === 'pop' ? (98 - (index * 2)) : (96 - (index * 3)) // 정렬 기준에 따라 조금씩 다른 점수 부여
+                }));
 
-                if (pref === 'pop') pool.sort((a,b) => b.popularity - a.popularity);
-                else pool.sort(() => Math.random() - 0.5);
-
-                setPlaylist(pool.slice(0, 10));
+                // 무조건 씨드곡이 첫 번째로 오고, 그 뒤에 유사도 순으로 9곡이 붙음
+                setPlaylist([seedSong, ...pool]);
                 setSortPref(pref);
                 setStep(4);
             };
@@ -254,146 +266,201 @@
             return (
                 <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
                     
-                    {/* 상단 앙상블 움직이는 로고 (Concept B) 영역 */}
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 30, alignItems:"center" }}>
-                        <div className="logo-wrap">
-                            <div className="circles-icon">
-                                <div className="ci ci1"></div>
-                                <div className="ci ci2"></div>
-                                <div className="ci ci3"></div>
-                            </div>
-                            <div className="text-block">
-                                <div className="c2-name">ENSEMBLE</div>
-                                <div className="c2-sub">PROJECT</div>
-                            </div>
-                        </div>
-                        {step === 4 && <button onClick={resetApp} style={{background:"linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color:"#FFFFFF", padding:"10px 24px", borderRadius:25, fontWeight:800, fontSize:14}}>처음으로</button>}
-                    </div>
-
-                    {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
-
-                    {/* 1페이지: 무드 선택 */}
-                    {step === 0 && (
-                        <div className="mood-grid">
-                            <div style={{textAlign:"center", marginBottom:"24px", fontFamily:"'Nunito', sans-serif"}}>
-                                <h1 style={{color:"#131313", fontSize:"1.4rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", opacity:0.5, margin:"0 0 10px 0"}}>
-                                    What's your mood?
-                                </h1>
-                                <h2 style={{color:"#131313", fontSize:"2.4rem", fontWeight:900, margin:0, wordBreak:"keep-all"}}>
-                                    지금 기분과 가장 가까운 색은 어떤 건가요?
-                                </h2>
-                            </div>
-                            <div className="mood-row">
-                                <MoodBtn m="chill"/><MoodBtn m="happy"/><MoodBtn m="romance"/>
-                            </div>
-                            <div className="mood-row">
-                                <MoodBtn m="sad"/><MoodBtn m="study"/><MoodBtn m="party"/><MoodBtn m="sleep"/>
-                            </div>
+                    {/* Splash Screen */}
+                    {step === -1 && (
+                        <div className="splash-screen">
+                            <h2 style={{ fontSize: "3rem", fontWeight: 900, margin: 0, color: "#131313" }}>오늘의 색,</h2>
+                            <h2 style={{ fontSize: "3rem", fontWeight: 900, margin: 0, color: "#131313" }}>오늘의 플레이리스트</h2>
                         </div>
                     )}
 
-                    {/* 2페이지: 클러스터 선택 */}
-                    {step === 1 && mood && (
-                        <div>
-                            <h1 style={{fontSize:28, fontWeight:900, marginBottom:30, textAlign:"center", color:"#131313"}}>어떤 스타일이 끌리나요?</h1>
-                            <div style={{ display: "grid", gridTemplateColumns: `repeat(${availableClusters.length}, 1fr)`, gap: 20 }}>
-                                {availableClusters.map(cl => (
-                                    <button key={cl.id} className="cluster-card" onClick={() => {setCId(cl.id); setStep(2);}}>
-                                        <div>
-                                            {cl.tags.map((tag, idx) => (
-                                                <div key={idx} className="hashtag">{tag}</div>
-                                            ))}
+                    {step >= 0 && (
+                        <>
+                            {/* 상단 앙상블 움직이는 로고 (Concept B-3) 영역 */}
+                            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 30, alignItems:"center" }}>
+                                <div className="logo-wrap">
+                                    <div className="circles-icon">
+                                        <div className="ci ci1"></div>
+                                        <div className="ci ci2"></div>
+                                        <div className="ci ci3"></div>
+                                    </div>
+                                    <div className="text-block">
+                                        <div className="c2-name">ENSEMBLE</div>
+                                        <div className="c2-sub">
+                                            <span>P</span><span>R</span><span>O</span><span>J</span><span>E</span><span>C</span><span>T</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {step === 4 && <button onClick={resetApp} style={{background:"linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color:"#FFFFFF", padding:"10px 24px", borderRadius:25, fontWeight:800, fontSize:14}}>처음으로</button>}
+                            </div>
+
+                            {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
+
+                            {/* 1페이지 (기존 1페이지): 무드 선택 */}
+                            {step === 0 && (
+                                <div className="mood-grid">
+                                    <div style={{textAlign:"center", marginBottom:"24px", fontFamily:"'Nunito', sans-serif"}}>
+                                        <h2 style={{color:"#131313", fontSize:"2.4rem", fontWeight:900, margin:"0 0 10px 0", wordBreak:"keep-all"}}>
+                                            오늘의 색을 알려주세요
+                                        </h2>
+                                        <h1 style={{color:"#131313", fontSize:"1rem", fontWeight:700, letterSpacing:"0.2em", textTransform:"uppercase", opacity:0.5, margin:0}}>
+                                            What's your mood?
+                                        </h1>
+                                    </div>
+                                    <div className="mood-row">
+                                        <MoodBtn m="chill"/><MoodBtn m="happy"/><MoodBtn m="romance"/>
+                                    </div>
+                                    <div className="mood-row">
+                                        <MoodBtn m="sad"/><MoodBtn m="study"/><MoodBtn m="party"/><MoodBtn m="sleep"/>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* 2페이지 (기존 2페이지): 클러스터 선택 */}
+                            {step === 1 && mood && (
+                                <div>
+                                    <h1 style={{fontSize:28, fontWeight:900, marginBottom:30, textAlign:"center", color:"#131313"}}>어떤 노래들을 듣고 싶나요?</h1>
+                                    <div style={{ display: "grid", gridTemplateColumns: `repeat(${availableClusters.length}, 1fr)`, gap: 20 }}>
+                                        {availableClusters.map(cl => (
+                                            <button key={cl.id} className="cluster-card" onClick={() => {setCId(cl.id); setStep(2);}}>
+                                                <div>
+                                                    {cl.tags.map((tag, idx) => (
+                                                        <div key={idx} className="hashtag">{tag}</div>
+                                                    ))}
+                                                </div>
+
+                                                <div style={{display:"flex", flexDirection:"column", gap:10, width:"100%", marginTop:10}}>
+                                                    {ALL_FEATS.map(feat => {
+                                                        const pct = getRelativePct(mood, cl.id, feat);
+                                                        return (
+                                                            <div key={feat}>
+                                                                <div style={{display:"flex", justifyContent:"space-between", fontSize:11, color:"#666666", marginBottom:4}}>
+                                                                    <span>{FEAT_LABEL[feat]}</span>
+                                                                    <span>{pct.toFixed(1)}%</span>
+                                                                </div>
+                                                                <div style={{background:"#EEEEEE", height:4, borderRadius:4, overflow:"hidden"}}>
+                                                                    <div style={{width:`${pct}%`, height:"100%", background:"linear-gradient(90deg, #f093fb, #667eea)", borderRadius:4}} />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* 3페이지 (기존 3페이지): 피처 선택 */}
+                            {step === 2 && (
+                                <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
+                                    <h1 style={{fontSize:28, fontWeight:900, marginBottom:10}}>조금 더 취향을 좁혀볼까요?</h1>
+                                    <p style={{color:"#666666", marginBottom:40}}>당신에 대해 더 알고 싶어요 ([{FEAT_LABEL[CLUSTER_FEATURE[mood][clusterId]]}] 기준)</p>
+                                    
+                                    <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
+                                        <button className="option-btn" onClick={() => { setFeatVal('hi'); setStep(3); }}>
+                                            {FEAT_Q[CLUSTER_FEATURE[mood][clusterId]].hi}
+                                        </button>
+                                        <button className="option-btn" onClick={() => { setFeatVal('lo'); setStep(3); }}>
+                                            {FEAT_Q[CLUSTER_FEATURE[mood][clusterId]].lo}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* 4페이지 (기존 4페이지): 정렬(씨드) 선택 */}
+                            {step === 3 && (
+                                <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
+                                    <h1 style={{fontSize:26, fontWeight:900, marginBottom:10}}>마지막으로,</h1>
+                                    <p style={{color:"#666666", marginBottom:40}}>어떤 음악을 기준으로 시작할까요?</p>
+                                    
+                                    <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
+                                        <button className="option-btn" onClick={() => generatePlaylist('pop')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 10}}>
+                                            <span>⭐ 대중성 기반 씨드곡</span>
+                                            <span style={{fontSize: 13, color:"#9f7aea"}}>└ {MOOD_DATA[mood].clusters.find(c => c.id === clusterId).top3[0][0]}</span>
+                                        </button>
+                                        <button className="option-btn" onClick={() => generatePlaylist('sim')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 10}}>
+                                            <span>🎯 취향 유사도 기반 씨드곡</span>
+                                            <span style={{fontSize: 13, color:"#9f7aea"}}>└ {MOOD_DATA[mood].clusters.find(c => c.id === clusterId).top3[0][0]}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* 5페이지 (기존 5페이지): 최종 플레이리스트 (2단 분리 레이아웃) */}
+                            {step === 4 && (
+                                <div>
+                                    <div style={{ background: "linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color: "#FFFFFF", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
+                                        <h2 style={{ margin: "0 0 10px 0", fontWeight:900 }}>Playlist for you</h2>
+                                        <p style={{margin:0, opacity:0.9, fontSize:14, fontWeight:500}}>
+                                            당신의 무드에 맞춘 10곡의 추천 리스트입니다.<br/>
+                                            ({sortPref === 'pop' ? "대중성 기반 씨드곡 시작" : "유사도 기반 씨드곡 시작"} 정렬)
+                                        </p>
+                                    </div>
+
+                                    {/* 여기서부터 2단 분리 레이아웃 */}
+                                    <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", flexWrap: "wrap" }}>
+                                        
+                                        {/* 왼쪽: 현재 선택된(재생 중인) 곡 상세 */}
+                                        <div style={{ flex: "1 1 300px", background: "#FFFFFF", border: "1px solid #DDDDDD", borderRadius: 16, padding: "30px 20px", textAlign: "center", position: "sticky", top: 20 }}>
+                                            {/* 임시 앨범 커버 이미지 영역 */}
+                                            <div style={{ width: 220, height: 220, margin: "0 auto 24px", background: "#EEEEEE", borderRadius: 12, overflow: "hidden", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
+                                                <img 
+                                                    src={`https://via.placeholder.com/220/c471ed/ffffff?text=Album+Cover`} 
+                                                    alt="album cover" 
+                                                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                                                />
+                                            </div>
+                                            <h3 style={{ margin: "0 0 10px 0", fontSize: 24, fontWeight: 900, color: "#131313" }}>
+                                                {playlist[nowPlaying]?.track_name}
+                                            </h3>
+                                            <div style={{ color: "#666666", fontSize: 16 }}>
+                                                {playlist[nowPlaying]?.artists}
+                                            </div>
+                                            
+                                            {/* 나중에 스포티파이 위젯이나 재생바가 들어갈 자리 */}
+                                            <div style={{ marginTop: 30, padding: "16px", background: "#F9F9F9", borderRadius: 12, fontSize: 13, color: "#888", border: "1px dashed #CCC" }}>
+                                                [ 🎧 스포티파이 플레이어 자리 ]
+                                            </div>
                                         </div>
 
-                                        <div style={{display:"flex", flexDirection:"column", gap:10, width:"100%", marginTop:10}}>
-                                            {ALL_FEATS.map(feat => {
-                                                const pct = getRelativePct(mood, cl.id, feat);
-                                                return (
-                                                    <div key={feat}>
-                                                        <div style={{display:"flex", justifyContent:"space-between", fontSize:11, color:"#666666", marginBottom:4}}>
-                                                            <span>{FEAT_LABEL[feat]}</span>
-                                                            <span>{pct.toFixed(1)}%</span>
+                                        {/* 오른쪽: 유사도 기반 플레이리스트 10곡 */}
+                                        <div style={{ flex: "2 1 500px", display: "flex", flexDirection: "column", gap: 10 }}>
+                                            {playlist.map((s, i) => (
+                                                <div key={i} onClick={() => setNowPlaying(i)} style={{ 
+                                                    padding: "16px 20px", background: i === nowPlaying ? "rgba(196, 113, 237, 0.1)" : "#FFFFFF", 
+                                                    border: "1px solid", borderColor: i === nowPlaying ? "#c471ed" : "#DDDDDD",
+                                                    borderRadius: 16, display: "grid", gridTemplateColumns: "50px 1fr", alignItems: "center", cursor: "pointer",
+                                                    transition: "all 0.2s"
+                                                }}>
+                                                    {/* 좌측 임시 소형 앨범 커버 */}
+                                                    <div style={{ width: 40, height: 40, background: "#EEEEEE", borderRadius: 6, overflow:"hidden" }}>
+                                                        <img src={`https://via.placeholder.com/40/c471ed/ffffff?text=C`} style={{width: "100%", height: "100%"}} />
+                                                    </div>
+
+                                                    {/* 곡 정보 및 유사도 바 */}
+                                                    <div>
+                                                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                                                            <div>
+                                                                <div style={{ fontWeight: 700, color: i === nowPlaying ? "#c471ed" : "#131313", marginBottom:2 }}>
+                                                                    {s.track_name} {i === 0 && <span style={{fontSize:10, background:"#c471ed", color:"#FFF", padding:"2px 6px", borderRadius:10, marginLeft:4}}>Seed</span>}
+                                                                </div>
+                                                                <div style={{ fontSize: 12, color: "#666666" }}>{s.artists}</div>
+                                                            </div>
+                                                            <div style={{ fontSize: 11, color: "#c471ed", fontWeight: 700 }}>{s.similarity}% 유사</div>
                                                         </div>
-                                                        <div style={{background:"#EEEEEE", height:4, borderRadius:4, overflow:"hidden"}}>
-                                                            <div style={{width:`${pct}%`, height:"100%", background:"linear-gradient(90deg, #f093fb, #667eea)", borderRadius:4}} />
+                                                        {/* 일렁이는 유사도 퍼센테이지 바 */}
+                                                        <div className="sim-bar-container">
+                                                            <div className="sim-bar-fill" style={{ width: `${s.similarity}%` }}></div>
                                                         </div>
                                                     </div>
-                                                )
-                                            })}
-                                        </div>
-
-                                        <div style={{borderTop:"1px solid #EEEEEE", paddingTop:16, marginTop:"auto"}}>
-                                            <div style={{fontSize:11, color:"#888888", marginBottom:8, fontWeight:700}}>대표곡</div>
-                                            {cl.top3.map(([name, artist], idx) => (
-                                                <div key={idx} style={{marginBottom:6}}>
-                                                    <div style={{fontSize:13, fontWeight:700, color:"#131313", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis"}}>{name}</div>
-                                                    <div style={{fontSize:11, color:"#666666"}}>{artist}</div>
                                                 </div>
                                             ))}
                                         </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 3페이지: 피처 선택 */}
-                    {step === 2 && (
-                        <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
-                            <h1 style={{fontSize:28, fontWeight:900, marginBottom:10}}>조금 더 취향을 좁혀볼까요?</h1>
-                            <p style={{color:"#666666", marginBottom:40}}>[{FEAT_LABEL[CLUSTER_FEATURE[mood][clusterId]]}] 기준으로 선택해주세요.</p>
-                            
-                            <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
-                                <button className="option-btn" onClick={() => { setFeatVal('hi'); setStep(3); }}>
-                                    {FEAT_Q[CLUSTER_FEATURE[mood][clusterId]].hi}
-                                </button>
-                                <button className="option-btn" onClick={() => { setFeatVal('lo'); setStep(3); }}>
-                                    {FEAT_Q[CLUSTER_FEATURE[mood][clusterId]].lo}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 4페이지: 정렬 기준 선택 */}
-                    {step === 3 && (
-                        <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
-                            <h1 style={{fontSize:26, fontWeight:900, marginBottom:10}}>마지막으로,</h1>
-                            <p style={{color:"#666666", marginBottom:40}}>어떤 음악들을 먼저 듣고 싶으신가요?</p>
-                            
-                            <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
-                                <button className="option-btn" onClick={() => generatePlaylist('pop')}>
-                                    ⭐ 대중적으로 인기가 많은 곡
-                                </button>
-                                <button className="option-btn" onClick={() => generatePlaylist('sim')}>
-                                    🎯 오로지 내 취향에 근접한 곡
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* 5페이지: 결과 (플레이리스트 10곡) */}
-                    {step === 4 && (
-                        <div>
-                            <div style={{ background: "linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color: "#FFFFFF", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
-                                <h2 style={{ margin: "0 0 10px 0", fontWeight:900 }}>Playlist for you</h2>
-                                <p style={{margin:0, opacity:0.9, fontSize:14, fontWeight:500}}>
-                                    당신의 무드에 맞춘 10곡의 추천 리스트입니다.<br/>
-                                    ({sortPref === 'pop' ? "인기도순" : "취향 유사도순"} 정렬)
-                                </p>
-                            </div>
-                            <div style={{ border: "1px solid #DDDDDD", borderRadius: 16, overflow: "hidden", background:"#FFFFFF" }}>
-                                {playlist.map((s, i) => (
-                                    <div key={i} onClick={() => setNowPlaying(i)} style={{ padding: "16px 20px", borderBottom: "1px solid #EEEEEE", display: "grid", gridTemplateColumns: "40px 1fr 80px", alignItems: "center", cursor: "pointer", background: i === nowPlaying ? "rgba(196, 113, 237, 0.1)" : "transparent" }}>
-                                        <span style={{ color: i === nowPlaying ? "#c471ed" : "#888888", fontWeight: 700 }}>{i + 1}</span>
-                                        <div>
-                                            <div style={{ fontWeight: 700, color: i === nowPlaying ? "#c471ed" : "#131313", marginBottom:4 }}>{s.track_name}</div>
-                                            <div style={{ fontSize: 12, color: "#666666" }}>{s.artists}</div>
-                                        </div>
-                                        <div style={{ textAlign: "right", fontSize: 11, color: "#888888" }}>{s.popularity} pop</div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             );
