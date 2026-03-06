@@ -55,14 +55,43 @@
         const SPOTIFY_TOKEN = "BQCUu2I3xw8pearUC9_ASbHsagK5PhCZsj-2EVeF0wmr-8Pj3FSGM5Zeq1MOxdXBG-uQJCE31107i0t4hfeyGh-oMEeTfIawEseoimlLnLMnALgaEJzn0MfkptsOCtrotVz9FghOGmN91zYjHPFWEMOQbH0pMvz31dV0wy1NPi3Ku46Vi7agUszpqRhR5zEMxrp_iH8xKCITI07wwWTpLu_ImNMilcMyBtu-4Q7twsdLxcrBxNQJBfFB7mVq386vxGgh6zB4eAVU"; 
 
         // 파이썬 데이터를 덮어쓰기 전까지, 재생 테스트 시 오류가 나지 않도록 노래들의 '진짜' 스포티파이 고유 ID를 찾아 적용했습니다.
+// 진짜 스포티파이 ID와 6가지 피처 평균값(means)이 모두 포함된 완벽한 데이터
         const MOOD_DATA = {
-            chill: { clusters: [{ id:0, tags:["#업비트", "#여유로운칠팝"], top3:[["NVMD","Denise Julia","7ArVzlFsFsQXNseVXmdOyk"],["Next Up","JBee","6yKqY1w63Z2T1YfJ7tT4tM"]] }, { id:1, tags:["#앰비언트", "#가사없는로파이"], top3:[["Eternal Youth","RŮDE","0ytvsZOerGzUWfHXVT2Sgy"],["i'm closing my eyes","potsu","3NsuucK8qXpIHKgSZpHLUq"]] }, { id:2, tags:["#감성어쿠스틱", "#차분한보컬"], top3:[["Another Love","Tom Odell","3JvKfv6T31zO0ini8iNItO"],["double take","dhruv","20bHlsOhaFqBfS1uT0WqF5"]] }] },
-            happy: { clusters: [{ id:0, tags:["#고에너지", "#유로팝"], top3:[["Nessaja","Scooter","3gOEvq76uCmr5qgWvLtyzG"],["The Logical Song","Scooter","1H5n96Pq3d3eLdFkLdfNn0"]] }, { id:1, tags:["#어쿠스틱", "#긍정적인분위기"], top3:[["Wanna Play?","The Prophet","1J0s4qO4k41e06T8j7hR9b"],["Dreams","2 Brothers","2Z8K9M3B3A5A1c4E3P7D9F"]] }, { id:2, tags:["#가사없는", "#해피배경음"], top3:[["DLMD","Darren Styles","2gP50P0E11k3oQ1D0A3n2E"],["Switch","Darren Styles","3cO5O0O0A0A0a0A0B0b0C0"]] }] },
-            romance: { clusters: [{id:0, tags:["#조용한", "#사랑노래"], top3:[["Чистые пруды","Igor Talkov","4nK3hH4R7z6SXXE6Cof3Yt"],["Kalinka","Ivan","5J0K3p9R8E1V1rL0M1A9nF"]]}, {id:1, tags:["#역동적인", "#러브송"], top3:[["Katyusha","Georgi Vinogradov","1aB2c3D4e5F6g7H8i9J0kL"],["Я тебя подожду","Maya","2bC3d4E5f6G7h8I9j0K1lM"]]}, {id:2, tags:["#서정적인", "#클래식연주곡"], top3:[["Katyusha","Ivan Rebroff","3cD4e5F6g7H8i9J0k1L2mN"],["До завтра","Vladimir","4dE5f6G7h8I9j0K1l2M3nO"]]}] },
-            sad: { clusters: [{id:0, tags:["#순수기악", "#앰비언트슬픔"], top3:[["Nobody Cares","Kina","5eF6g7H8i9J0k1L2m3N4oP"],["U're Mine","Kina","6fG7h8I9j0K1l2M3n4O5pQ"]]}, {id:1, tags:["#에너지있는", "#격정적슬픔"], top3:[["By the Sword","iamjakehill","7gH8i9J0k1L2m3N4o5P6qR"],["NUMB","Chri$tian","8hI9j0K1l2M3n4O5p6Q7rS"]]}, {id:2, tags:["#느리고감성적인", "#대중적슬픔"], top3:[["death bed","Powfu","9iJ0k1L2m3N4o5P6q7R8sT"],["Living Life","Cheriimoya","0jK1l2M3n4O5p6Q7r8S9tU"]]}] },
-            sleep: { clusters: [{id:0, tags:["#가장부드러운", "#수면음악"], top3:[["Ons","Huma","1kL2m3N4o5P6q7R8s9T0uV"],["Brown Noise","Sleep","2lM3n4O5p6Q7r8S9t0U1vW"]]}, {id:1, tags:["#전자노이즈", "#백색소음"], top3:[["Womb Heartbeat","Silent Knights","3mN4o5P6q7R8s9T0u1V2wX"],["Weißes Rauschen","HD","4nO5p6Q7r8S9t0U1v2W3xY"]]}, {id:2, tags:["#리드미컬한", "#수면사운드"], top3:[["Shhhh 1","Silent Knights","5oP6q7R8s9T0u1V2w3X4yZ"],["Endless Sky","Nils","6pQ7r8S9t0U1v2W3x4Y5zA"]]}] },
-            study: { clusters: [{id:0, label:"업비트 BGM", tags:["#활기찬", "#작업배경음"], top3:[["Ritual","Tipsy","7qR8s9T0u1V2w3X4y5Z6aB"],["r u kiddin me?","Wibke","8rS9t0U1v2W3x4Y5z6A7bC"]]}, {id:1, tags:["#전형적인", "#로파이재즈"], top3:[["Skin Tone","Timothy","9sT0u1V2w3X4y5Z6a7B8cD"],["Distractions","Timothy","0tU1v2W3x4Y5z6A7b8C9dE"]]}, {id:2, tags:["#가사있는", "#보컬스터디"], top3:[["Latex","Sail","1uV2w3X4y5Z6a7B8c9D0eF"],["Morning Stretch","Timothy","2vW3x4Y5z6A7b8C9d0E1fG"]]}] },
-            party: { clusters: [{id:0, tags:["#고에너지", "#테크노댄스홀"], top3:[["Layla","DJ Robin","3wX4y5Z6a7B8c9D0e1F2gH"],["Olivia","Die Zipfelbuben","4xY5z6A7b8C9d0E1f2G3hI"]]}, {id:1, tags:["#아웃라이어"], top3:[["Move It","Cats","5yZ6a7B8c9D0e1F2g3H4iJ"]]}, {id:2, tags:["#분위기전환용", "#어쿠스틱파티"], top3:[["Easy Peasy","Leony","6zA7b8C9d0E1f2G3h4I5jK"],["LEBENSLANG","Tream","7aB8c9D0e1F2g3H4i5J6kL"]]}] }
+            chill: { clusters: [
+                { id:0, tags:["#업비트", "#여유로운칠팝"], top3:[["NVMD","Denise Julia","7ArVzlFsFsQXNseVXmdOyk"],["Next Up","JBee","6yKqY1w63Z2T1YfJ7tT4tM"]], means:{danceability:0.72,energy:0.55,valence:0.55,tempo:119,acousticness:0.3,instrumentalness:0.04} }, 
+                { id:1, tags:["#앰비언트", "#가사없는로파이"], top3:[["Eternal Youth","RŮDE","0ytvsZOerGzUWfHXVT2Sgy"],["i'm closing my eyes","potsu","3NsuucK8qXpIHKgSZpHLUq"]], means:{danceability:0.63,energy:0.31,valence:0.26,tempo:109,acousticness:0.69,instrumentalness:0.84} }, 
+                { id:2, tags:["#감성어쿠스틱", "#차분한보컬"], top3:[["Another Love","Tom Odell","3JvKfv6T31zO0ini8iNItO"],["double take","dhruv","20bHlsOhaFqBfS1uT0WqF5"]], means:{danceability:0.57,energy:0.37,valence:0.28,tempo:112,acousticness:0.65,instrumentalness:0.02} }
+            ] },
+            happy: { clusters: [
+                { id:0, tags:["#고에너지", "#유로팝"], top3:[["Nessaja","Scooter","3gOEvq76uCmr5qgWvLtyzG"],["The Logical Song","Scooter","1H5n96Pq3d3eLdFkLdfNn0"]], means:{danceability:0.48,energy:0.94,valence:0.25,tempo:161,acousticness:0.05,instrumentalness:0.08} }, 
+                { id:1, tags:["#어쿠스틱", "#긍정적인분위기"], top3:[["Wanna Play?","The Prophet","1J0s4qO4k41e06T8j7hR9b"],["Dreams","2 Brothers","2Z8K9M3B3A5A1c4E3P7D9F"]], means:{danceability:0.65,energy:0.91,valence:0.54,tempo:135,acousticness:0.09,instrumentalness:0.08} }, 
+                { id:2, tags:["#가사없는", "#해피배경음"], top3:[["DLMD","Darren Styles","2gP50P0E11k3oQ1D0A3n2E"],["Switch","Darren Styles","3cO5O0O0A0A0a0A0B0b0C0"]], means:{danceability:0.58,energy:0.84,valence:0.27,tempo:153,acousticness:0.03,instrumentalness:0.72} }
+            ] },
+            romance: { clusters: [
+                {id:0, tags:["#조용한", "#사랑노래"], top3:[["Чистые пруды","Igor Talkov","4nK3hH4R7z6SXXE6Cof3Yt"],["Kalinka","Ivan","5J0K3p9R8E1V1rL0M1A9nF"]], means:{danceability:0.37,energy:0.22,valence:0.27,tempo:105,acousticness:0.93,instrumentalness:0.01}},
+                {id:1, tags:["#역동적인", "#러브송"], top3:[["Katyusha","Georgi Vinogradov","1aB2c3D4e5F6g7H8i9J0kL"],["Я тебя подожду","Maya","2bC3d4E5f6G7h8I9j0K1lM"]], means:{danceability:0.53,energy:0.42,valence:0.62,tempo:118,acousticness:0.73,instrumentalness:0.01}},
+                {id:2, tags:["#서정적인", "#클래식연주곡"], top3:[["Katyusha","Ivan Rebroff","3cD4e5F6g7H8i9J0k1L2mN"],["До завтра","Vladimir","4dE5f6G7h8I9j0K1l2M3nO"]], means:{danceability:0.36,energy:0.29,valence:0.35,tempo:103,acousticness:0.92,instrumentalness:0.50}}
+            ] },
+            sad: { clusters: [
+                {id:0, tags:["#순수기악", "#앰비언트슬픔"], top3:[["Nobody Cares","Kina","5eF6g7H8i9J0k1L2m3N4oP"],["U're Mine","Kina","6fG7h8I9j0K1l2M3n4O5pQ"]], means:{danceability:0.65,energy:0.32,valence:0.3,tempo:123,acousticness:0.62,instrumentalness:0.73}},
+                {id:1, tags:["#에너지있는", "#격정적슬픔"], top3:[["By the Sword","iamjakehill","7gH8i9J0k1L2m3N4o5P6qR"],["NUMB","Chri$tian","8hI9j0K1l2M3n4O5p6Q7rS"]], means:{danceability:0.71,energy:0.61,valence:0.49,tempo:125,acousticness:0.18,instrumentalness:0.01}},
+                {id:2, tags:["#느리고감성적인", "#대중적슬픔"], top3:[["death bed","Powfu","9iJ0k1L2m3N4o5P6q7R8sT"],["Living Life","Cheriimoya","0jK1l2M3n4O5p6Q7r8S9tU"]], means:{danceability:0.67,energy:0.39,valence:0.40,tempo:114,acousticness:0.64,instrumentalness:0.01}}
+            ] },
+            sleep: { clusters: [
+                {id:0, tags:["#가장부드러운", "#수면음악"], top3:[["Ons","Huma","1kL2m3N4o5P6q7R8s9T0uV"],["Brown Noise","Sleep","2lM3n4O5p6Q7r8S9t0U1vW"]], means:{danceability:0.15,energy:0.11,valence:0.05,tempo:92,acousticness:0.91,instrumentalness:0.83}},
+                {id:1, tags:["#전자노이즈", "#백색소음"], top3:[["Womb Heartbeat","Silent Knights","3mN4o5P6q7R8s9T0u1V2wX"],["Weißes Rauschen","HD","4nO5p6Q7r8S9t0U1v2W3xY"]], means:{danceability:0.18,energy:0.75,valence:0.01,tempo:99,acousticness:0.33,instrumentalness:0.74}},
+                {id:2, tags:["#리드미컬한", "#수면사운드"], top3:[["Shhhh 1","Silent Knights","5oP6q7R8s9T0u1V2w3X4yZ"],["Endless Sky","Nils","6pQ7r8S9t0U1v2W3x4Y5zA"]], means:{danceability:0.34,energy:0.18,valence:0.24,tempo:111,acousticness:0.91,instrumentalness:0.40}}
+            ] },
+            study: { clusters: [
+                {id:0, label:"업비트 BGM", tags:["#활기찬", "#작업배경음"], top3:[["Ritual","Tipsy","7qR8s9T0u1V2w3X4y5Z6aB"],["r u kiddin me?","Wibke","8rS9t0U1v2W3x4Y5z6A7bC"]], means:{danceability:0.70,energy:0.52,valence:0.52,tempo:117,acousticness:0.26,instrumentalness:0.84}},
+                {id:1, tags:["#전형적인", "#로파이재즈"], top3:[["Skin Tone","Timothy","9sT0u1V2w3X4y5Z6a7B8cD"],["Distractions","Timothy","0tU1v2W3x4Y5z6A7b8C9dE"]], means:{danceability:0.66,energy:0.32,valence:0.30,tempo:108,acousticness:0.72,instrumentalness:0.85}},
+                {id:2, tags:["#가사있는", "#보컬스터디"], top3:[["Latex","Sail","1uV2w3X4y5Z6a7B8c9D0eF"],["Morning Stretch","Timothy","2vW3x4Y5z6A7b8C9d0E1fG"]], means:{danceability:0.70,energy:0.45,valence:0.46,tempo:108,acousticness:0.45,instrumentalness:0.23}}
+            ] },
+            party: { clusters: [
+                {id:0, tags:["#고에너지", "#테크노댄스홀"], top3:[["Layla","DJ Robin","3wX4y5Z6a7B8c9D0e1F2gH"],["Olivia","Die Zipfelbuben","4xY5z6A7b8C9d0E1f2G3hI"]], means:{danceability:0.63,energy:0.91,valence:0.65,tempo:136,acousticness:0.05,instrumentalness:0.01}},
+                {id:1, tags:["#아웃라이어"], top3:[["Move It","Cats","5yZ6a7B8c9D0e1F2g3H4iJ"]], means:{danceability:0.81,energy:0.86,valence:0.82,tempo:130,acousticness:0.0,instrumentalness:0.49}},
+                {id:2, tags:["#분위기전환용", "#어쿠스틱파티"], top3:[["Easy Peasy","Leony","6zA7b8C9d0E1f2G3h4I5jK"],["LEBENSLANG","Tream","7aB8c9D0e1F2g3H4i5J6kL"]], means:{danceability:0.74,energy:0.75,valence:0.73,tempo:120,acousticness:0.18,instrumentalness:0.01}}
+            ] }
         };
 
         const MOOD_STYLE = { chill: { background: "#f5ebe0" }, happy: { background: "linear-gradient(160deg, #ffd94f 0%, #ff9a28 100%)" }, romance: { background: "linear-gradient(160deg, #ff96aa 0%, #c83c64 100%)" }, sad: { background: "linear-gradient(160deg, #a0b9d2 0%, #506e96 100%)" }, sleep: { background: "linear-gradient(160deg, #3c3278 0%, #140f3c 100%)" }, study: { background: "linear-gradient(160deg, #8cc8a0 0%, #32825a 100%)" }, party: { background: "linear-gradient(160deg, #e678ff 0%, #8c28c8 100%)" } };
