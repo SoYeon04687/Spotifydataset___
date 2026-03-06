@@ -155,7 +155,7 @@
         };
 
         const MOOD_STYLE = {
-            chill: { background: "#f5ebe0" }, // 사용자 요청: chill 배경색 변경
+            chill: { background: "#f5ebe0" }, 
             happy: { background: "linear-gradient(160deg, #ffd94f 0%, #ff9a28 100%)" }, 
             romance: { background: "linear-gradient(160deg, #ff96aa 0%, #c83c64 100%)" },
             sad: { background: "linear-gradient(160deg, #a0b9d2 0%, #506e96 100%)" }, 
@@ -216,27 +216,27 @@
             };
 
             const generatePlaylist = (pref) => {
-                // 이전의 랜덤(Math.random) 생성 방식을 버리고, 
-                // 씨드곡을 기반으로 한 결정론적(Deterministic) 리스트 생성으로 변경했습니다.
                 const currentCluster = MOOD_DATA[mood].clusters.find(c => c.id === clusterId);
-                const seedSong = { track_name: currentCluster.top3[0][0], artists: currentCluster.top3[0][1], similarity: 100 };
                 
-                // 임시로 무드 내의 다른 곡들을 모아 유사도가 점차 낮아지게 고정 배열 생성 (실제 파이썬 API 연동 시 진짜 점수로 대체됨)
+                // 대중성을 고르면 1순위 곡을, 취향을 고르면 2순위 곡을 씨드곡으로 설정
+                const seedIndex = pref === 'pop' ? 0 : 1;
+                // 만약 2순위 곡이 없다면(데이터 부족 등) 1순위 곡으로 대체
+                const seedSongRaw = currentCluster.top3[seedIndex] || currentCluster.top3[0];
+                const seedSong = { track_name: seedSongRaw[0], artists: seedSongRaw[1], similarity: 100 };
+                
                 let pool = MOOD_DATA[mood].clusters.flatMap(c => 
                     c.top3.map(t => ({ track_name: t[0], artists: t[1] }))
-                ).filter(s => s.track_name !== seedSong.track_name); // 씨드곡 중복 제거
+                ).filter(s => s.track_name !== seedSong.track_name); 
 
-                // 10곡을 채우기 위한 더미 데이터 생성 (유사도 점수 고정 할당)
                 while(pool.length < 9) {
                     pool = [...pool, ...pool.map(p => ({...p, track_name: p.track_name + " (Acoustic)"}))];
                 }
                 
                 pool = pool.slice(0, 9).map((s, index) => ({
                     ...s, 
-                    similarity: pref === 'pop' ? (98 - (index * 2)) : (96 - (index * 3)) // 정렬 기준에 따라 조금씩 다른 점수 부여
+                    similarity: pref === 'pop' ? (98 - (index * 2)) : (96 - (index * 3))
                 }));
 
-                // 무조건 씨드곡이 첫 번째로 오고, 그 뒤에 유사도 순으로 9곡이 붙음
                 setPlaylist([seedSong, ...pool]);
                 setSortPref(pref);
                 setStep(4);
@@ -263,6 +263,15 @@
                 return totalSum > 0 ? (clusterVal / totalSum) * 100 : 0;
             };
 
+            // 선택된 무드와 클러스터에 따라 보여줄 씨드곡 미리 가져오기
+            let popSeed = ["", ""];
+            let simSeed = ["", ""];
+            if (mood && clusterId !== null) {
+                const currentCluster = MOOD_DATA[mood].clusters.find(c => c.id === clusterId);
+                popSeed = currentCluster.top3[0];
+                simSeed = currentCluster.top3[1] || currentCluster.top3[0];
+            }
+
             return (
                 <div style={{ maxWidth: 960, margin: "0 auto", padding: "40px 20px" }}>
                     
@@ -276,7 +285,7 @@
 
                     {step >= 0 && (
                         <>
-                            {/* 상단 앙상블 움직이는 로고 (Concept B-3) 영역 */}
+                            {/* 상단 앙상블 움직이는 로고 영역 */}
                             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 30, alignItems:"center" }}>
                                 <div className="logo-wrap">
                                     <div className="circles-icon">
@@ -296,7 +305,7 @@
 
                             {step > 0 && step < 4 && <button onClick={() => setStep(step - 1)} className="back-btn">← 뒤로 가기</button>}
 
-                            {/* 1페이지 (기존 1페이지): 무드 선택 */}
+                            {/* 1페이지: 무드 선택 */}
                             {step === 0 && (
                                 <div className="mood-grid">
                                     <div style={{textAlign:"center", marginBottom:"24px", fontFamily:"'Nunito', sans-serif"}}>
@@ -316,7 +325,7 @@
                                 </div>
                             )}
 
-                            {/* 2페이지 (기존 2페이지): 클러스터 선택 */}
+                            {/* 2페이지: 클러스터 선택 */}
                             {step === 1 && mood && (
                                 <div>
                                     <h1 style={{fontSize:28, fontWeight:900, marginBottom:30, textAlign:"center", color:"#131313"}}>어떤 노래들을 듣고 싶나요?</h1>
@@ -351,7 +360,7 @@
                                 </div>
                             )}
 
-                            {/* 3페이지 (기존 3페이지): 피처 선택 */}
+                            {/* 3페이지: 피처 선택 */}
                             {step === 2 && (
                                 <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
                                     <h1 style={{fontSize:28, fontWeight:900, marginBottom:10}}>조금 더 취향을 좁혀볼까요?</h1>
@@ -368,26 +377,29 @@
                                 </div>
                             )}
 
-                            {/* 4페이지 (기존 4페이지): 정렬(씨드) 선택 */}
+                            {/* 4페이지: 정렬(씨드) 선택 (사용자 요청 반영 부분) */}
                             {step === 3 && (
                                 <div style={{textAlign:"center", padding:"40px 0", color:"#131313"}}>
                                     <h1 style={{fontSize:26, fontWeight:900, marginBottom:10}}>마지막으로,</h1>
                                     <p style={{color:"#666666", marginBottom:40}}>어떤 음악을 기준으로 시작할까요?</p>
                                     
-                                    <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:400, margin:"0 auto"}}>
-                                        <button className="option-btn" onClick={() => generatePlaylist('pop')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 10}}>
-                                            <span>⭐ 대중성 기반 씨드곡</span>
-                                            <span style={{fontSize: 13, color:"#9f7aea"}}>└ {MOOD_DATA[mood].clusters.find(c => c.id === clusterId).top3[0][0]}</span>
+                                    <div style={{display:"flex", flexDirection:"column", gap:12, maxWidth:450, margin:"0 auto"}}>
+                                        <button className="option-btn" onClick={() => generatePlaylist('pop')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 6, padding: "24px 16px"}}>
+                                            <span style={{fontSize: 16, fontWeight: 800, color: "#131313", marginBottom: 8}}>⭐ 대중성 높은 곡으로 시작하기</span>
+                                            <span style={{fontSize: 18, color: "#c471ed", fontWeight: 900}}>{popSeed[0]}</span>
+                                            <span style={{fontSize: 13, color: "#888888"}}>{popSeed[1]}</span>
                                         </button>
-                                        <button className="option-btn" onClick={() => generatePlaylist('sim')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 10}}>
-                                            <span>🎯 취향 유사도 기반 씨드곡</span>
-                                            <span style={{fontSize: 13, color:"#9f7aea"}}>└ {MOOD_DATA[mood].clusters.find(c => c.id === clusterId).top3[0][0]}</span>
+                                        
+                                        <button className="option-btn" onClick={() => generatePlaylist('sim')} style={{display: "flex", flexDirection:"column", alignItems:"center", gap: 6, padding: "24px 16px"}}>
+                                            <span style={{fontSize: 16, fontWeight: 800, color: "#131313", marginBottom: 8}}>🎯 내 취향에 딱 맞는 곡으로 시작하기</span>
+                                            <span style={{fontSize: 18, color: "#c471ed", fontWeight: 900}}>{simSeed[0]}</span>
+                                            <span style={{fontSize: 13, color: "#888888"}}>{simSeed[1]}</span>
                                         </button>
                                     </div>
                                 </div>
                             )}
 
-                            {/* 5페이지 (기존 5페이지): 최종 플레이리스트 (2단 분리 레이아웃) */}
+                            {/* 5페이지: 최종 플레이리스트 */}
                             {step === 4 && (
                                 <div>
                                     <div style={{ background: "linear-gradient(135deg, #f093fb 0%, #667eea 100%)", color: "#FFFFFF", padding: "30px", borderRadius: 20, marginBottom: 30 }}>
@@ -398,12 +410,10 @@
                                         </p>
                                     </div>
 
-                                    {/* 여기서부터 2단 분리 레이아웃 */}
                                     <div style={{ display: "flex", gap: "20px", alignItems: "flex-start", flexWrap: "wrap" }}>
                                         
-                                        {/* 왼쪽: 현재 선택된(재생 중인) 곡 상세 */}
+                                        {/* 왼쪽: 현재 재생 중인 곡 상세 */}
                                         <div style={{ flex: "1 1 300px", background: "#FFFFFF", border: "1px solid #DDDDDD", borderRadius: 16, padding: "30px 20px", textAlign: "center", position: "sticky", top: 20 }}>
-                                            {/* 임시 앨범 커버 이미지 영역 */}
                                             <div style={{ width: 220, height: 220, margin: "0 auto 24px", background: "#EEEEEE", borderRadius: 12, overflow: "hidden", boxShadow: "0 10px 30px rgba(0,0,0,0.1)" }}>
                                                 <img 
                                                     src={`https://via.placeholder.com/220/c471ed/ffffff?text=Album+Cover`} 
@@ -418,13 +428,12 @@
                                                 {playlist[nowPlaying]?.artists}
                                             </div>
                                             
-                                            {/* 나중에 스포티파이 위젯이나 재생바가 들어갈 자리 */}
                                             <div style={{ marginTop: 30, padding: "16px", background: "#F9F9F9", borderRadius: 12, fontSize: 13, color: "#888", border: "1px dashed #CCC" }}>
                                                 [ 🎧 스포티파이 플레이어 자리 ]
                                             </div>
                                         </div>
 
-                                        {/* 오른쪽: 유사도 기반 플레이리스트 10곡 */}
+                                        {/* 오른쪽: 플레이리스트 10곡 */}
                                         <div style={{ flex: "2 1 500px", display: "flex", flexDirection: "column", gap: 10 }}>
                                             {playlist.map((s, i) => (
                                                 <div key={i} onClick={() => setNowPlaying(i)} style={{ 
@@ -433,12 +442,10 @@
                                                     borderRadius: 16, display: "grid", gridTemplateColumns: "50px 1fr", alignItems: "center", cursor: "pointer",
                                                     transition: "all 0.2s"
                                                 }}>
-                                                    {/* 좌측 임시 소형 앨범 커버 */}
                                                     <div style={{ width: 40, height: 40, background: "#EEEEEE", borderRadius: 6, overflow:"hidden" }}>
                                                         <img src={`https://via.placeholder.com/40/c471ed/ffffff?text=C`} style={{width: "100%", height: "100%"}} />
                                                     </div>
 
-                                                    {/* 곡 정보 및 유사도 바 */}
                                                     <div>
                                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                                                             <div>
@@ -449,7 +456,6 @@
                                                             </div>
                                                             <div style={{ fontSize: 11, color: "#c471ed", fontWeight: 700 }}>{s.similarity}% 유사</div>
                                                         </div>
-                                                        {/* 일렁이는 유사도 퍼센테이지 바 */}
                                                         <div className="sim-bar-container">
                                                             <div className="sim-bar-fill" style={{ width: `${s.similarity}%` }}></div>
                                                         </div>
