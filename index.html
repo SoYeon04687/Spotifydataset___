@@ -101,7 +101,7 @@ const MOOD_STYLE  = {chill:{background:"#f5ebe0"},happy:{background:"linear-grad
 const CLUSTER_FEATURE = {chill:{0:"instrumentalness",1:"danceability",2:"valence"},happy:{0:"valence",1:"danceability",2:"instrumentalness"},romance:{0:"acousticness",1:"energy",2:"instrumentalness"},sad:{0:"acousticness",1:"tempo",2:"instrumentalness"},sleep:{0:"valence",1:"tempo",2:"acousticness"},study:{0:"instrumentalness",1:"danceability",2:"tempo"},party:{0:"tempo",1:"tempo"}};
 const FEAT_LABEL = {danceability:"리듬의 일정함",energy:"에너지",valence:"밝음",tempo:"템포",acousticness:"어쿠스틱",instrumentalness:"악기의 풍부함"};
 const ALL_FEATS  = ["danceability","energy","valence","tempo","acousticness","instrumentalness"];
-const FEAT_Q     = {danceability:{hi:"리드미컬하고 춤추기 좋은 곡",lo:"리듬감이 적고 차분한 곡"},energy:{hi:"에너지가 넘치고 강렬한 곡",lo:"에너지가 낮고 잔잔한 곡"},valence:{hi:"더 밝고 긍정적인 곡",lo:"더 감성적이고 진지한 곡"},tempo:{hi:"템포가 빠른 곡",lo:"템포가 느린 곡"},acousticness:{hi:"어쿠스틱 악기 중심의 곡",lo:"전자음이 섞인 곡"},instrumentalness:{hi:"보컬이 없는 연주 중심 곡",lo:"보컬이 포함된 곡"}};
+const FEAT_Q     = {danceability:{hi:"리드미컬하고 춤추기 좋은 곡",lo:"리듬감이 적고 차분한 곡"},energy:{hi:"에너지가 넘치고 강렬한 곡",lo:"에너지가 낮고 잔잔한 곡"},valence:{hi:"더 밝고 긍정적인 곡",lo:"더 감성적이고 진지한 곡"},tempo:{hi:"템포가 빠른 곡",lo:"템포가 느린 곡"},acousticness:{hi:"어쿠스틱 악기 중심의 곡",lo:"전자음이 섞인 곡"},instrumentalness:{hi:"보컬이 적은 연주 중심 곡",lo:"보컬이 포함된 곡"}};
 
 /* ── 레이더 차트 ── */
 function RadarChart({ means, accent, size=140 }) {
